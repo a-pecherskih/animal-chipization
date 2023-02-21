@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +13,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::post('registration', [\App\Http\Controllers\AccountController::class, 'registration']);
+
+Route::group([
+    'prefix' => 'accounts',
+    'middleware' => ['auth.basic'],
+    'as' => 'account.',
+    'controller' => \App\Http\Controllers\AccountController::class
+], function () {
+    Route::get('/search', 'search');
+    Route::get('/{user}', 'show');
+
+    Route::group(['middleware' => 'auth.current'], function () {
+        Route::put('/{user}', 'update')->name('update');
+        Route::delete('/{user}', 'delete')->name('delete');
+    });
 });
