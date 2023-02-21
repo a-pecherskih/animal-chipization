@@ -29,3 +29,15 @@ Route::group([
         Route::delete('/{user}', 'delete')->name('delete');
     });
 });
+
+Route::group([
+    'prefix' => 'locations',
+    'middleware' => ['auth.basic'],
+    'as' => 'location.',
+    'controller' => \App\Http\Controllers\LocationController::class
+], function () {
+    Route::get('/{location}', 'show');
+    Route::post('/', 'create');
+    Route::put('/{location}', 'update');
+    Route::delete('/{location}', 'delete');
+});
