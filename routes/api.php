@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('registration', [\App\Http\Controllers\AccountController::class, 'registration']);
 
+
 Route::group([
     'prefix' => 'accounts',
     'middleware' => ['auth.basic'],
