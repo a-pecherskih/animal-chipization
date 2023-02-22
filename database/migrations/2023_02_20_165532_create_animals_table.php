@@ -20,11 +20,11 @@ return new class extends Migration
             $table->float('length');
             $table->float('height');
             $table->enum('gender', Animal::getGendersList());
-            $table->enum('lifeStatus', Animal::getStatusesList())->default(Animal::STATUS_ALIVE);
-            $table->timestamp('chipping_date_time');
-            $table->timestamp('death_date_time')->nullable();
+            $table->enum('life_status', Animal::getStatusesList())->default(Animal::STATUS_ALIVE);
             $table->unsignedBigInteger('chipper_id');
             $table->unsignedBigInteger('chipping_location_id')->nullable();
+            $table->timestamp('chipping_date_time');
+            $table->timestamp('death_date_time')->nullable();
 
             $table->foreign('chipper_id')
                 ->references('id')

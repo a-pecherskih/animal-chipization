@@ -49,6 +49,12 @@ Route::group(['middleware' => ['auth.basic']], function () {
         'controller' => \App\Http\Controllers\AnimalController::class
     ], function () {
 
+        Route::get('/search', 'search');
+        Route::get('/{animal}', 'show');
+        Route::post('/', 'create');
+        Route::put('/{animal}', 'update');
+        Route::delete('/{animal}', 'delete');
+
         Route::group([
             'prefix' => 'types',
             'as' => 'type.',
