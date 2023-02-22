@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Exceptions\BadRequestException;
 use App\Models\Animal;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
@@ -42,6 +41,7 @@ class AnimalService
             })
             ->offset($from)
             ->limit($size)
+            ->orderBy('id')
             ->get();
     }
 

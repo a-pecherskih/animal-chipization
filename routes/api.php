@@ -65,5 +65,15 @@ Route::group(['middleware' => ['auth.basic']], function () {
             Route::put('/{animalType}', 'update');
             Route::delete('/{animalType}', 'delete');
         });
+
+        Route::group([
+            'prefix' => '{animal}/types',
+            'as' => 'type.',
+            'controller' => \App\Http\Controllers\Animal\TypeController::class
+        ], function () {
+            Route::post('/{animalType}', 'create');
+            Route::put('/', 'update');
+            Route::delete('/{animalType}', 'delete');
+        });
     });
 });

@@ -53,6 +53,7 @@ class AccountService
             })
             ->offset($from)
             ->limit($size)
+            ->orderBy('id')
             ->get();
     }
 
