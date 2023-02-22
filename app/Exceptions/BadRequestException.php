@@ -9,6 +9,6 @@ class BadRequestException extends Exception
 {
     public function render($request)
     {
-        abort(Response::HTTP_BAD_REQUEST);
+        return response()->json([], Response::HTTP_BAD_REQUEST);
     }
 }

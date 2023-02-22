@@ -9,6 +9,6 @@ class UserNotCurrentException extends Exception
 {
     public function render($request)
     {
-        abort(Response::HTTP_FORBIDDEN);
+        return response()->json([], Response::HTTP_FORBIDDEN);
     }
 }

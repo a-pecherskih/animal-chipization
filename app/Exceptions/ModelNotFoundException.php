@@ -9,6 +9,6 @@ class ModelNotFoundException extends Exception
 {
     public function render($request)
     {
-        abort(Response::HTTP_NOT_FOUND);
+        return response()->json([], Response::HTTP_NOT_FOUND);
     }
 }
