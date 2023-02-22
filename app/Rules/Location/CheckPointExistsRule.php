@@ -2,6 +2,7 @@
 
 namespace App\Rules\Location;
 
+use App\Exceptions\ModelFieldExistsException;
 use App\Models\Location;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Database\Eloquent\Builder;
@@ -40,7 +41,7 @@ class CheckPointExistsRule implements Rule
             ->first();
 
         if ($location) {
-            abort(409);
+            throw new ModelFieldExistsException;
         }
 
         return true;

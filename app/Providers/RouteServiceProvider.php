@@ -2,6 +2,12 @@
 
 namespace App\Providers;
 
+use App\Exceptions\BadRequestException;
+use App\Exceptions\ModelNotFoundException;
+use App\Models\Animal;
+use App\Models\AnimalType;
+use App\Models\Location;
+use App\Models\User;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
@@ -35,6 +41,31 @@ class RouteServiceProvider extends ServiceProvider
 
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
+        });
+
+        Route::bind('account', function ($value) {
+
+            if (blank($value) || $value <= 0) throw new BadRequestException();
+
+            return User::query()->firstWhere('id', $value) ?? throw new ModelNotFoundException;
+        });
+        Route::bind('animalType', function ($value) {
+
+            if (blank($value) || $value <= 0) throw new BadRequestException();
+
+            return AnimalType::query()->firstWhere('id', $value) ?? throw new ModelNotFoundException;
+        });
+        Route::bind('location', function ($value) {
+
+            if (blank($value) || $value <= 0) throw new BadRequestException();
+
+            return Location::query()->firstWhere('id', $value) ?? throw new ModelNotFoundException;
+        });
+        Route::bind('animal', function ($value) {
+
+            if (blank($value) || $value <= 0) throw new BadRequestException();
+
+            return Animal::query()->firstWhere('id', $value) ?? throw new ModelNotFoundException;
         });
     }
 

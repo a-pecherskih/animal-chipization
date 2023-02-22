@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\BadRequestException;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -53,5 +54,14 @@ class AccountService
             ->offset($from)
             ->limit($size)
             ->get();
+    }
+
+    public function delete(User $user)
+    {
+        if (count($user->animals) > 0) {
+            throw new BadRequestException();
+        }
+
+        $user->delete();
     }
 }

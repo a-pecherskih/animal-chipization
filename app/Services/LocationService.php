@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
+use App\Exceptions\BadRequestException;
 use App\Models\Location;
-use Symfony\Component\HttpFoundation\Response;
 
 class LocationService
 {
@@ -29,7 +29,7 @@ class LocationService
     public function delete(Location $location)
     {
         if (count($location->animals) > 0) {
-            abort(Response::HTTP_BAD_REQUEST);
+            throw new BadRequestException();
         }
 
         $location->delete();

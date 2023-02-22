@@ -40,4 +40,14 @@ class Animal extends Model
             'visited_location_id'
         );
     }
+
+    public function types(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            AnimalType::class,
+            'animal_animal_types',
+            'animal_id',
+            'animal_type_id'
+        );
+    }
 }

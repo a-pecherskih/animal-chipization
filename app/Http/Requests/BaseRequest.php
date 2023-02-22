@@ -9,12 +9,14 @@ use Symfony\Component\HttpFoundation\Response;
 
 class BaseRequest extends FormRequest
 {
+    protected function checkCustomFails($validator) {}
+
     public function failedValidation(Validator $validator)
     {
-        $status = isset($validator->failed()['email']['Unique']) ? Response::HTTP_CONFLICT : Response::HTTP_BAD_REQUEST;
+        $this->checkCustomFails($validator);
 
         throw new HttpResponseException(response()->json([
             'errors' => $validator->errors()
-        ], $status));
+        ], Response::HTTP_BAD_REQUEST));
     }
 }

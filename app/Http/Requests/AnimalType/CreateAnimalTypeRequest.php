@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Account;
+namespace App\Http\Requests\AnimalType;
 
 use App\Exceptions\ModelFieldExistsException;
 use App\Http\Requests\BaseRequest;
 
-class UpdateAccountRequest extends BaseRequest
+class CreateAnimalTypeRequest extends BaseRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -15,16 +15,13 @@ class UpdateAccountRequest extends BaseRequest
     public function rules()
     {
         return [
-            'firstName' => 'required|string',
-            'lastName' => 'required|string',
-            'email' => 'required|email|unique:users,email,' . $this->user->id . ',id',
-            'password' => 'required',
+            'type' => 'required|string|unique:animal_types,type',
         ];
     }
 
     protected function checkCustomFails($validator)
     {
-        if (isset($validator->failed()['email']['Unique'])) {
+        if (isset($validator->failed()['type']['Unique'])) {
             throw new ModelFieldExistsException;
         }
     }

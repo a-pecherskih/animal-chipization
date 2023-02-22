@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Account;
 
+use App\Exceptions\ModelFieldExistsException;
 use App\Http\Requests\BaseRequest;
 
 class RegistrationRequest extends BaseRequest
@@ -19,5 +20,12 @@ class RegistrationRequest extends BaseRequest
             'email' => 'required|email|unique:users,email',
             'password' => 'required',
         ];
+    }
+
+    protected function checkCustomFails($validator)
+    {
+        if (isset($validator->failed()['email']['Unique'])) {
+            throw new ModelFieldExistsException;
+        }
     }
 }

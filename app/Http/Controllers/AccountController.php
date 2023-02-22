@@ -44,9 +44,9 @@ class AccountController extends Controller
         return response()->json(new AccountResource($user), Response::HTTP_OK);
     }
 
-    public function delete(User $user)
+    public function delete(User $user, AccountService $service)
     {
-        $user->delete();
+        $service->delete($user);
 
         return response()->json([], Response::HTTP_OK);
     }
