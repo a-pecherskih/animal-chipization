@@ -29,11 +29,6 @@ class Animal extends Model
 
     public $timestamps = false;
 
-    /**
-     * The storage format of the model's date columns.
-     *
-     * @var string
-     */
     protected $dateFormat = 'c';
 
     protected $dates = ['chipping_date_time', 'death_date_time'];
@@ -62,7 +57,7 @@ class Animal extends Model
             'animal_locations',
             'animal_id',
             'visited_location_id'
-        )->orderBy('visited_location_id');
+        )->withPivot(['id', 'date_time'])->orderBy('date_time');
     }
 
     public function types(): BelongsToMany

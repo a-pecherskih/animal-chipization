@@ -14,7 +14,7 @@ class Location extends Model
 
     public $timestamps = false;
 
-    public function animals(): BelongsToMany
+    public function visitedAnimals(): BelongsToMany
     {
         return $this->belongsToMany(
             Animal::class,

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Animal;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Animal\Type\AddTypeToAnimalRequest;
-use App\Http\Requests\Animal\Type\ChangeAnimalTypeRequest;
+use App\Http\Requests\Animal\Type\UpdateAnimalTypeRequest;
 use App\Http\Requests\Animal\Type\DeleteAnimalTypeRequest;
 use App\Http\Resources\AnimalResource;
 use App\Models\Animal;
@@ -21,7 +21,7 @@ class TypeController extends Controller
         return response()->json(new AnimalResource($animal), Response::HTTP_CREATED);
     }
 
-    public function update(Animal $animal, ChangeAnimalTypeRequest $request, TypeService $service)
+    public function update(Animal $animal, UpdateAnimalTypeRequest $request, TypeService $service)
     {
         $data = $request->validated();
 

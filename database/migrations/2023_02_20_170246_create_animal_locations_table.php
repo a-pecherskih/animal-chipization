@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('animal_id');
             $table->unsignedBigInteger('visited_location_id');
+            $table->timestamp('date_time');
 
             $table->foreign('animal_id')
                 ->references('id')

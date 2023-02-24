@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Exceptions\BadRequestException;
 use App\Exceptions\ModelNotFoundException;
 use App\Models\Animal;
+use App\Models\AnimalLocation;
 use App\Models\AnimalType;
 use App\Models\Location;
 use App\Models\User;
@@ -66,6 +67,12 @@ class RouteServiceProvider extends ServiceProvider
             if (blank($value) || $value <= 0) throw new BadRequestException();
 
             return Animal::query()->firstWhere('id', $value) ?? throw new ModelNotFoundException;
+        });
+        Route::bind('animalLocation', function ($value) {
+
+            if (blank($value) || $value <= 0) throw new BadRequestException();
+
+            return AnimalLocation::query()->firstWhere('id', $value) ?? throw new ModelNotFoundException;
         });
     }
 

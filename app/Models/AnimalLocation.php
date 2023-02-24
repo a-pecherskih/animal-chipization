@@ -2,10 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class AnimalLocation extends Model
 {
-    use HasFactory;
+    public $timestamps = false;
+
+    protected $dateFormat = 'c';
+
+    protected $dates = ['date_time'];
+
+    protected $fillable = ['animal_id', 'visited_location_id', 'date_time'];
 }

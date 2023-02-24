@@ -28,7 +28,7 @@ class LocationService
 
     public function delete(Location $location)
     {
-        if (count($location->animals) > 0) {
+        if (count($location->visitedAnimals) > 0) {
             throw new BadRequestException();
         }
 

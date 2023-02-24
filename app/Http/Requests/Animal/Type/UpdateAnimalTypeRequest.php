@@ -7,7 +7,7 @@ use App\Http\Requests\BaseRequest;
 use App\Rules\Animal\Type\TypeAlreadyExistRule;
 use App\Rules\Animal\Type\TypeNotExistRule;
 
-class ChangeAnimalTypeRequest extends BaseRequest
+class UpdateAnimalTypeRequest extends BaseRequest
 {
     /**
      * Get the validation rules that apply to the request.
