@@ -46,7 +46,7 @@ class Kernel extends HttpKernel
     ];
 
     protected $middlewarePriority = [
-        \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        \App\Http\Middleware\CustomBasicAuth::class,
         \Illuminate\Routing\Middleware\SubstituteBindings::class
     ];
 

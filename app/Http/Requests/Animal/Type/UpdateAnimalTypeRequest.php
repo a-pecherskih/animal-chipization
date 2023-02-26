@@ -17,8 +17,8 @@ class UpdateAnimalTypeRequest extends BaseRequest
     public function rules()
     {
         return [
-            'oldTypeId' => ['required', 'exists:animal_types,id', new TypeNotExistRule()],
-            'newTypeId' => ['required', 'exists:animal_types,id', new TypeAlreadyExistRule()],
+            'oldTypeId' => ['required', 'gt:0', 'bail', 'exists:animal_types,id', new TypeNotExistRule()],
+            'newTypeId' => ['required', 'gt:0', 'bail', 'exists:animal_types,id', new TypeAlreadyExistRule()],
         ];
     }
 

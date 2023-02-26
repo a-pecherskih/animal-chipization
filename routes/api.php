@@ -13,10 +13,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('registration', [\App\Http\Controllers\AccountController::class, 'registration']);
-
-
 Route::group(['middleware' => ['auth.basic']], function () {
+
+    Route::post('registration', [\App\Http\Controllers\AccountController::class, 'registration'])->name('registration');
+
     Route::group([
         'prefix' => 'accounts',
         'as' => 'account.',

@@ -16,8 +16,8 @@ class UpdateVisitedLocationPointRequest extends BaseRequest
     public function rules()
     {
         return [
-            'visitedLocationPointId' => ['required', 'bail', 'exists:animal_locations,id,animal_id,' . $this->route('animal')->id],
-            'locationPointId' => ['required', 'bail', 'exists:locations,id', new CheckNewVisitedPoint()],
+            'visitedLocationPointId' => ['required', 'bail', 'gt:0', 'exists:animal_locations,id,animal_id,' . $this->route('animal')->id],
+            'locationPointId' => ['required', 'bail', 'gt:0', 'exists:locations,id', new CheckNewVisitedPoint()],
         ];
     }
 

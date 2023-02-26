@@ -18,7 +18,7 @@ return [
         'passwords' => 'users',
     ],
 
-    'exclude_routes' => [
+    'stage_0_routes' => [
         'account.search',
         'account.show',
         'animal.search',
@@ -26,6 +26,7 @@ return [
         'animal.type.show',
         'location.show',
         'animal.location.search',
+        'registration'
     ],
 
     /*

@@ -18,13 +18,13 @@ class CreateAnimalRequest extends BaseRequest
     {
         return [
             'animalTypes' => 'required|array',
-            'animalTypes.*' => 'required|distinct|exists:animal_types,id',
+            'animalTypes.*' => 'required|distinct|gt:0|bail|exists:animal_types,id',
             'weight' => 'required|numeric|gt:0',
             'length' => 'required|numeric|gt:0',
             'height' => 'required|numeric|gt:0',
             'gender' => 'required|in:' . implode(',', Animal::getGendersList()),
-            'chipperId' => 'required|exists:users,id',
-            'chippingLocationId' => 'required|exists:locations,id',
+            'chipperId' => 'required|gt:0|bail|exists:users,id',
+            'chippingLocationId' => 'required|gt:0|bail|exists:locations,id',
         ];
     }
 

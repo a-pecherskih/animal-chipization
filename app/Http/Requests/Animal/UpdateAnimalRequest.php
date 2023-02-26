@@ -23,8 +23,8 @@ class UpdateAnimalRequest extends BaseRequest
             'height' => 'required|numeric|gt:0',
             'gender' => 'required|in:' . implode(',', Animal::getGendersList()),
             'lifeStatus' => ['required', 'in:' . implode(',', Animal::getStatusesList()), new ChangeLifeStatusRule()],
-            'chipperId' => 'required|exists:users,id',
-            'chippingLocationId' => ['required', 'exists:locations,id', new ChangeChippingLocationRule()],
+            'chipperId' => 'required|gt:0|bail|exists:users,id',
+            'chippingLocationId' => ['required', 'gt:0', 'bail', 'exists:locations,id', new ChangeChippingLocationRule()],
         ];
     }
 }

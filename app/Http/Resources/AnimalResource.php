@@ -17,9 +17,9 @@ class AnimalResource extends JsonResource
         return [
             'id' => $this->id,
             'animalTypes' => $this->types->pluck('id')->toArray(),
-            'weight' => $this->weight,
-            'length' => $this->length,
-            'height' => $this->height,
+            'weight' => round($this->weight, 2),
+            'length' => round($this->length, 2),
+            'height' => round($this->height, 2),
             'gender' => $this->gender,
             'lifeStatus' => $this->life_status,
             'chippingDateTime' => $this->chipping_date_time,
