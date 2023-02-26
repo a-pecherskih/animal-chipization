@@ -18,6 +18,16 @@ return [
         'passwords' => 'users',
     ],
 
+    'exclude_routes' => [
+        'account.search',
+        'account.show',
+        'animal.search',
+        'animal.show',
+        'animal.type.show',
+        'location.show',
+        'animal.location.search',
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Authentication Guards

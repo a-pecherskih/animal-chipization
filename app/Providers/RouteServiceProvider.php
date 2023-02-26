@@ -44,7 +44,7 @@ class RouteServiceProvider extends ServiceProvider
                 ->group(base_path('routes/web.php'));
         });
 
-        Route::bind('account', function ($value) {
+        Route::bind('user', function ($value) {
 
             if (blank($value) || $value <= 0) throw new BadRequestException();
 

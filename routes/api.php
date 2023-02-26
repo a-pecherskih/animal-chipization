@@ -22,8 +22,8 @@ Route::group(['middleware' => ['auth.basic']], function () {
         'as' => 'account.',
         'controller' => \App\Http\Controllers\AccountController::class
     ], function () {
-        Route::get('/search', 'search')->withoutMiddleware(['auth.basic']);;
-        Route::get('/{user}', 'show')->withoutMiddleware(['auth.basic']);
+        Route::get('/search', 'search')->name('search');
+        Route::get('/{user}', 'show')->name('show');
 
         Route::group(['middleware' => 'auth.current'], function () {
             Route::put('/{user}', 'update')->name('update');
@@ -37,7 +37,7 @@ Route::group(['middleware' => ['auth.basic']], function () {
         'controller' => \App\Http\Controllers\LocationController::class
     ], function () {
 
-        Route::get('/{location}', 'show')->withoutMiddleware(['auth.basic']);;
+        Route::get('/{location}', 'show')->name('show');
         Route::post('/', 'create');
         Route::put('/{location}', 'update');
         Route::delete('/{location}', 'delete');
@@ -49,8 +49,8 @@ Route::group(['middleware' => ['auth.basic']], function () {
         'controller' => \App\Http\Controllers\AnimalController::class
     ], function () {
 
-        Route::get('/search', 'search')->withoutMiddleware(['auth.basic']);
-        Route::get('/{animal}', 'show')->withoutMiddleware(['auth.basic']);
+        Route::get('/search', 'search')->name('search');
+        Route::get('/{animal}', 'show')->name('show');
         Route::post('/', 'create');
         Route::put('/{animal}', 'update');
         Route::delete('/{animal}', 'delete');
@@ -60,7 +60,7 @@ Route::group(['middleware' => ['auth.basic']], function () {
             'as' => 'type.',
             'controller' => \App\Http\Controllers\AnimalTypeController::class
         ], function () {
-            Route::get('/{animalType}', 'show')->withoutMiddleware(['auth.basic']);;
+            Route::get('/{animalType}', 'show')->name('show');
             Route::post('/', 'create');
             Route::put('/{animalType}', 'update');
             Route::delete('/{animalType}', 'delete');
@@ -81,7 +81,7 @@ Route::group(['middleware' => ['auth.basic']], function () {
             'as' => 'location.',
             'controller' => \App\Http\Controllers\Animal\VisitedLocationController::class
         ], function () {
-            Route::get('/', 'search')->withoutMiddleware(['auth.basic']);
+            Route::get('/', 'search')->name('search');
             Route::post('/{location}', 'create');
             Route::put('/', 'update');
             Route::delete('/{animalLocation}', 'delete');
