@@ -21,7 +21,9 @@ class AddVisitedLocationToAnimalRequest extends BaseRequest
 
         if (($animal->life_status === Animal::STATUS_DEAD)
             || $this->animalHasOnlyChippingLocation($animal, $location)
-            || $this->animalAlreadyInThisPoint($animal, $location)) {
+            || $this->animalAlreadyInThisPoint($animal, $location)
+            || (!count($animal->visitedLocations) && $location->id == $animal->chipping_location_id)
+        ) {
             throw new BadRequestException();
         }
 

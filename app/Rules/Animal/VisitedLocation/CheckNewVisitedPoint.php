@@ -29,11 +29,23 @@ class CheckNewVisitedPoint implements Rule
         $oldVisitedPoint = AnimalLocation::query()
             ->find(request()->input('visitedLocationPointId'));
 
-        if ($oldVisitedPoint->id == $value) return false;
+        if (is_null($oldVisitedPoint) || $oldVisitedPoint->visited_location_id == $value) return false;
 
+        /**
+         * @var $animal \App\Models\Animal
+         */
         $animal = request()->route('animal')->load('visitedLocations');
-
         $visitedLocations = $animal->visitedLocations->toArray();
+
+        /**
+         * Замена первой точки на точку чипирования - нельзя
+         */
+        if (count($visitedLocations)
+            && ($visitedLocations[0]['id'] == $oldVisitedPoint->visited_location_id)
+            && ($value == $animal->chipping_location_id)
+        ) {
+            return false;
+        }
 
         /**
          * Обновление точки локации на точку, совпадающую со следующей и/или с предыдущей точками

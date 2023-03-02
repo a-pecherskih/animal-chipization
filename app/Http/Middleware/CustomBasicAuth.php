@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Exceptions\UserNotCurrentException;
+use App\Exceptions\ForbiddenException;
 use Closure;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Http\Request;
@@ -37,7 +37,7 @@ class CustomBasicAuth
      * @param string|null $field
      * @return mixed
      *
-     * @throws \Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException|\App\Exceptions\UserNotCurrentException
+     * @throws \Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException|\App\Exceptions\ForbiddenException
      */
     public function handle(Request $request, Closure $next, $guard = null, $field = null)
     {
@@ -55,7 +55,7 @@ class CustomBasicAuth
             try {
                 $this->auth->guard($guard)->basic($field ?: 'email');
 
-                throw new UserNotCurrentException();
+                throw new ForbiddenException();
             } catch (UnauthorizedHttpException $e) {
                 return $next($request);
             }

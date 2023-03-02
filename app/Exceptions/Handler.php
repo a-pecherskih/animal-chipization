@@ -55,7 +55,7 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $e)
     {
         if (($e instanceof ModelNotFoundException) && in_array(Route::currentRouteName(), ['account.update', 'account.delete'])) {
-            throw new UserNotCurrentException();
+            throw new ForbiddenException();
         }
 
         return parent::render($request, $e);

@@ -17,15 +17,15 @@ class AnimalResource extends JsonResource
         return [
             'id' => $this->id,
             'animalTypes' => $this->types->pluck('id')->toArray(),
-            'weight' => round($this->weight, 2),
-            'length' => round($this->length, 2),
-            'height' => round($this->height, 2),
+            'weight' => $this->weight,
+            'length' => $this->length,
+            'height' => $this->height,
             'gender' => $this->gender,
             'lifeStatus' => $this->life_status,
             'chippingDateTime' => $this->chipping_date_time,
             'chipperId' => $this->chipper_id,
             'chippingLocationId' => $this->chipping_location_id,
-            'visitedLocations' => $this->visitedLocations->pluck('id')->toArray(),
+            'visitedLocations' => $this->visitedLocations->pluck('pivot.id')->toArray(),
             'deathDateTime' => $this->death_date_time,
         ];
     }

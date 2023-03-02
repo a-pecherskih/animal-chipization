@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Location extends Model
 {
@@ -13,6 +14,14 @@ class Location extends Model
     ];
 
     public $timestamps = false;
+
+    public function chippingAnimals(): HasMany
+    {
+        return $this->hasMany(
+            Animal::class,
+            'chipping_location_id',
+        );
+    }
 
     public function visitedAnimals(): BelongsToMany
     {

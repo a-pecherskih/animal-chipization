@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Exceptions\BadRequestException;
 use App\Exceptions\ModelNotFoundException;
+use App\Exceptions\ForbiddenException;
 use App\Models\Animal;
 use App\Models\AnimalLocation;
 use App\Models\AnimalType;
@@ -48,7 +49,17 @@ class RouteServiceProvider extends ServiceProvider
 
             if (blank($value) || $value <= 0) throw new BadRequestException();
 
-            return User::query()->firstWhere('id', $value) ?? throw new ModelNotFoundException;
+            $user = User::query()->firstWhere('id', $value);
+
+            if (blank($user)) {
+                if (in_array(request()->route()->getName(), ['account.delete', 'account.update'])) {
+                    throw new ForbiddenException();
+                } else {
+                    throw new ModelNotFoundException;
+                }
+            }
+
+            return $user;
         });
         Route::bind('animalType', function ($value) {
 

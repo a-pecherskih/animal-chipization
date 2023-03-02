@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Animal;
 
-use App\Exceptions\ModelFieldExistsException;
+use App\Exceptions\ModelNotFoundException;
 use App\Http\Requests\BaseRequest;
 use App\Models\Animal;
 use App\Rules\Animal\ChangeChippingLocationRule;
@@ -26,5 +26,14 @@ class UpdateAnimalRequest extends BaseRequest
             'chipperId' => 'required|gt:0|bail|exists:users,id',
             'chippingLocationId' => ['required', 'gt:0', 'bail', 'exists:locations,id', new ChangeChippingLocationRule()],
         ];
+    }
+
+    protected function checkCustomFails($validator)
+    {
+        if (isset($validator->failed()['chipperId']['Exists'])
+            || isset($validator->failed()['chippingLocationId']['Exists'])
+        ) {
+            throw new ModelNotFoundException();
+        }
     }
 }

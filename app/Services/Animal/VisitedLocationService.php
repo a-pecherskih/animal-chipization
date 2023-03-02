@@ -60,7 +60,7 @@ class VisitedLocationService
          * Если удаляется первая посещенная точка локации,
          * а вторая точка совпадает с точкой чипирования, то она удаляется автоматически
          */
-        if (count($animal->visitedLocations) == 2 && $animal->visitedLocations[0]->pivot->id == $animalLocation->id) {
+        if (count($animal->visitedLocations) > 2 && $animal->visitedLocations[0]->pivot->id == $animalLocation->id) {
             if ($animal->visitedLocations[1]->id == $animal->chipping_location_id) {
                 $detachPointsIds[] = $animal->visitedLocations[1]->pivot->id;
             }
