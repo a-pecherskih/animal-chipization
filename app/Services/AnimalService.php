@@ -72,6 +72,7 @@ class AnimalService
             'gender' => $data['gender'],
             'life_status' => $data['lifeStatus'],
             'chipper_id' => $data['chipperId'],
+            'chipping_location_id' => $data['chippingLocationId'],
         ]);
 
         if ($animal->life_status == Animal::STATUS_DEAD && is_null($animal->death_date_time)) {

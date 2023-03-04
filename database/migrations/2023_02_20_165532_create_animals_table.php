@@ -16,9 +16,9 @@ return new class extends Migration
     {
         Schema::create('animals', function (Blueprint $table) {
             $table->id();
-            $table->float('weight');
-            $table->float('length');
-            $table->float('height');
+            $table->decimal('weight', 15, 10);
+            $table->decimal('length', 15, 10);
+            $table->decimal('height', 15, 10);
             $table->enum('gender', Animal::getGendersList());
             $table->enum('life_status', Animal::getStatusesList())->default(Animal::STATUS_ALIVE);
             $table->unsignedBigInteger('chipper_id');
