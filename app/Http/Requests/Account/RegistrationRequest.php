@@ -22,7 +22,7 @@ class RegistrationRequest extends BaseRequest
         ];
     }
 
-    protected function checkCustomFails($validator)
+    protected function afterValidation($validator)
     {
         if (isset($validator->failed()['email']['Unique'])) {
             throw new ModelFieldExistsException;

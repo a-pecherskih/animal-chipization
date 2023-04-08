@@ -9,11 +9,11 @@ use Symfony\Component\HttpFoundation\Response;
 
 class BaseRequest extends FormRequest
 {
-    protected function checkCustomFails($validator) {}
+    protected function afterValidation($validator) {}
 
     public function failedValidation(Validator $validator)
     {
-        $this->checkCustomFails($validator);
+        $this->afterValidation($validator);
 
         throw new HttpResponseException(response()->json([
             'errors' => $validator->errors()

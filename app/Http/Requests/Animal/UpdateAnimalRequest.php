@@ -28,7 +28,7 @@ class UpdateAnimalRequest extends BaseRequest
         ];
     }
 
-    protected function checkCustomFails($validator)
+    protected function afterValidation($validator)
     {
         if (isset($validator->failed()['chipperId']['Exists'])
             || isset($validator->failed()['chippingLocationId']['Exists'])

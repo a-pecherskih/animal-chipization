@@ -22,7 +22,7 @@ class UpdateAnimalTypeRequest extends BaseRequest
         ];
     }
 
-    protected function checkCustomFails($validator)
+    protected function afterValidation($validator)
     {
         if (isset($validator->failed()['oldTypeId']['Exists'])
             || isset($validator->failed()['newTypeId']['Exists'])

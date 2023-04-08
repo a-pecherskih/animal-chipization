@@ -21,7 +21,7 @@ class UpdateVisitedLocationPointRequest extends BaseRequest
         ];
     }
 
-    protected function checkCustomFails($validator)
+    protected function afterValidation($validator)
     {
         if (isset($validator->failed()['visitedLocationPointId']['Exists'])
             || isset($validator->failed()['locationPointId']['Exists'])

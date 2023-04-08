@@ -28,7 +28,7 @@ class CreateAnimalRequest extends BaseRequest
         ];
     }
 
-    protected function checkCustomFails($validator)
+    protected function afterValidation($validator)
     {
         if (isset($validator->failed()['animalTypes.0']['Distinct'])) {
             throw new ModelFieldExistsException();
