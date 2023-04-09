@@ -42,13 +42,6 @@ class CustomBasicAuth
     public function handle(Request $request, Closure $next, $guard = null, $field = null)
     {
         /**
-         * Пропускаем авторизацию для роутов 0 уровня
-         */
-        if (!$request->hasHeader('Authorization') && in_array($request->route()->getName(), config('auth.stage_0_routes'))) {
-            return $next($request);
-        }
-
-        /**
          * Если регистрация под авторизационным акком, то недопускаем
          */
         if ($request->hasHeader('Authorization') && $request->route()->getName() == 'registration') {

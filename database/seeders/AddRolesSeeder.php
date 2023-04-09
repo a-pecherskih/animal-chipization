@@ -17,15 +17,15 @@ class AddRolesSeeder extends Seeder
         $roles = [
             [
                 'id' => 1,
-                'name' => 'ADMIN'
+                'name' => Role::ADMIN
             ],
             [
                 'id' => 2,
-                'name' => 'CHIPPER'
+                'name' => Role::CHIPPER
             ],
             [
                 'id' => 3,
-                'name' => 'USER'
+                'name' => Role::USER
             ]
         ];
 

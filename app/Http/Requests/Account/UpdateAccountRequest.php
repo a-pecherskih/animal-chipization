@@ -2,11 +2,16 @@
 
 namespace App\Http\Requests\Account;
 
-use App\Exceptions\ModelFieldExistsException;
 use App\Http\Requests\BaseRequest;
+use App\Models\Role;
 
 class UpdateAccountRequest extends BaseRequest
 {
+    protected function prepareForValidation()
+    {
+        request()->merge(['id' => request()->route('id')]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -15,17 +20,12 @@ class UpdateAccountRequest extends BaseRequest
     public function rules()
     {
         return [
+            'id' => 'required|numeric|min:1',
             'firstName' => 'required|string',
             'lastName' => 'required|string',
-            'email' => 'required|email|unique:users,email,' . $this->user->id . ',id',
+            'email' => 'required|email',
             'password' => 'required',
+            'role' => 'required|string|in:' . implode(',', Role::getRoles()),
         ];
-    }
-
-    protected function afterValidation($validator)
-    {
-        if (isset($validator->failed()['email']['Unique'])) {
-            throw new ModelFieldExistsException;
-        }
     }
 }

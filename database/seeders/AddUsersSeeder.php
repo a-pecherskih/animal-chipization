@@ -25,7 +25,7 @@ class AddUsersSeeder extends Seeder
                 'role_id' => 1,
             ],
             [
-                'id' => 1,
+                'id' => 2,
                 'firstName' => 'chipperFirstName',
                 'lastName' => 'chipperLastName',
                 'email' => 'chipper@simbirsoft.com',
@@ -33,7 +33,7 @@ class AddUsersSeeder extends Seeder
                 'role_id' => 2,
             ],
             [
-                'id' => 1,
+                'id' => 3,
                 'firstName' => 'userFirstName',
                 'lastName' => 'userLastName',
                 'email' => 'user@simbirsoft.com',
@@ -43,7 +43,8 @@ class AddUsersSeeder extends Seeder
         ];
 
         foreach ($data as $item) {
-            User::query()->updateOrCreate(['id' => $item['id']], [
+            User::query()->create([
+                'id' => $item['id'],
                 'first_name' => $item['firstName'],
                 'last_name' => $item['lastName'],
                 'email' => $item['email'],

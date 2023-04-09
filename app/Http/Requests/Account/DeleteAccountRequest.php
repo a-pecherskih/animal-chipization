@@ -2,11 +2,15 @@
 
 namespace App\Http\Requests\Account;
 
-use App\Exceptions\ModelFieldExistsException;
 use App\Http\Requests\BaseRequest;
 
-class RegistrationRequest extends BaseRequest
+class DeleteAccountRequest extends BaseRequest
 {
+    protected function prepareForValidation()
+    {
+        request()->merge(['id' => request()->route('id')]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -15,10 +19,7 @@ class RegistrationRequest extends BaseRequest
     public function rules()
     {
         return [
-            'firstName' => 'required',
-            'lastName' => 'required',
-            'email' => 'required|email',
-            'password' => 'required',
+            'id' => 'required|numeric|min:1',
         ];
     }
 }

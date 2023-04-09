@@ -18,17 +18,6 @@ return [
         'passwords' => 'users',
     ],
 
-    'stage_0_routes' => [
-        'account.search',
-        'account.show',
-        'animal.search',
-        'animal.show',
-        'animal.type.show',
-        'location.show',
-        'animal.location.search',
-        'registration'
-    ],
-
     /*
     |--------------------------------------------------------------------------
     | Authentication Guards

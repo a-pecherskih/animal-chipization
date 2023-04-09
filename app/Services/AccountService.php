@@ -2,66 +2,79 @@
 
 namespace App\Services;
 
-use App\Exceptions\BadRequestException;
+use App\Models\Role;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Hash;
+use App\Repositories\AccountRepository;
+use App\Repositories\RoleRepository;
+use App\Validators\AccountValidator;
+use Illuminate\Database\Eloquent\Collection;
 
 class AccountService
 {
-    public function create(array $data)
+    private AccountRepository $repository;
+    private RoleRepository $roleRepository;
+    private AccountValidator $validator;
+
+    /**
+     * AccountService constructor.
+     * @param \App\Repositories\AccountRepository $repository
+     * @param \App\Repositories\RoleRepository $roleRepository
+     * @param \App\Validators\AccountValidator $validator
+     */
+    public function __construct(AccountRepository $repository, RoleRepository $roleRepository, AccountValidator $validator)
     {
-        return User::query()->create([
-            'first_name' => $data['firstName'],
-            'last_name' => $data['lastName'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
+        $this->repository = $repository;
+        $this->roleRepository = $roleRepository;
+        $this->validator = $validator;
     }
 
-    public function update(User $user, array $data)
+    public function register(array $data)
     {
-        $user->fill([
-            'first_name' => $data['firstName'],
-            'last_name' => $data['lastName'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
-        $user->save();
+        $this->validator->checkNotExistUserEmailOrThrowEx($data['email']);
 
-        return $user;
+        $roleId = $this->roleRepository->findByName(Role::USER)->id;
+        $data['role_id'] = $roleId;
+
+        return $this->repository->create($data);
+    }
+
+    /**
+     * @throws \App\Exceptions\ModelFieldExistsException
+     */
+    public function store(array $data)
+    {
+        $this->validator->checkNotExistUserEmailOrThrowEx($data['email']);
+
+        $roleId = $this->roleRepository->findByName($data['role'])->id;
+        $data['role_id'] = $roleId;
+
+        return $this->repository->create($data);
+    }
+
+    /**
+     * @throws \App\Exceptions\ModelFieldExistsException
+     */
+    public function update(User $user, array $data): User
+    {
+        $this->validator->checkNotExistUserEmailOrThrowEx($data['email'], $user);
+
+        $roleId = $this->roleRepository->findByName($data['role'])->id;
+        $data['role_id'] = $roleId;
+
+        return $this->repository->update($user, $data);
     }
 
     public function search(array $data): Collection
     {
-        $firstName = $data['firstName'] ?? null;
-        $lastName = $data['lastName'] ?? null;
-        $email = $data['email'] ?? null;
-        $from = $data['from'] ?? 0;
-        $size = $data['size'] ?? 10;
-
-        return User::query()
-            ->when($firstName, function (Builder $q) use ($firstName) {
-                $q->where('first_name', 'like', "%$firstName%");
-            })
-            ->when($lastName, function (Builder $q) use ($lastName) {
-                $q->where('last_name', 'like', "%$lastName%");
-            })
-            ->when($email, function (Builder $q) use ($email) {
-                $q->where('email', 'like', "%$email%");
-            })
-            ->offset($from)
-            ->limit($size)
-            ->orderBy('id')
-            ->get();
+       return $this->repository->search($data);
     }
 
+    /**
+     * @throws \App\Exceptions\BadRequestException
+     */
     public function delete(User $user)
     {
-        if (count($user->animals) > 0) {
-            throw new BadRequestException();
-        }
+       $this->validator->checkNotAnimalsOrThrowEx($user);
 
         $user->delete();
     }

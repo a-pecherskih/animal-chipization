@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests\Account;
 
-use App\Exceptions\ModelFieldExistsException;
 use App\Http\Requests\BaseRequest;
+use App\Models\Role;
 
-class RegistrationRequest extends BaseRequest
+class StoreAccountRequest extends BaseRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -15,10 +15,11 @@ class RegistrationRequest extends BaseRequest
     public function rules()
     {
         return [
-            'firstName' => 'required',
-            'lastName' => 'required',
+            'firstName' => 'required|string',
+            'lastName' => 'required|string',
             'email' => 'required|email',
             'password' => 'required',
+            'role' => 'required|string|in:' . implode(',', Role::getRoles()),
         ];
     }
 }

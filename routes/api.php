@@ -23,12 +23,10 @@ Route::group(['middleware' => ['auth.basic']], function () {
         'controller' => \App\Http\Controllers\AccountController::class
     ], function () {
         Route::get('/search', 'search')->name('search');
-        Route::get('/{user}', 'show')->name('show');
-
-        Route::group(['middleware' => 'auth.current'], function () {
-            Route::put('/{user}', 'update')->name('update');
-            Route::delete('/{user}', 'delete')->name('delete');
-        });
+        Route::post('/', 'store')->name('store');
+        Route::get('/{id}', 'show')->name('show');
+        Route::put('/{id}', 'update')->name('update');
+        Route::delete('/{id}', 'delete')->name('delete');
     });
 
     Route::group([
