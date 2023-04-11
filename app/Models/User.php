@@ -48,11 +48,6 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
-    public function isSameUser($user)
-    {
-        return $user->id == $this->id;
-    }
-
     public function isAdmin()
     {
         return $this->role->name == Role::ADMIN;

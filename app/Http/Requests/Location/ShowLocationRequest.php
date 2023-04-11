@@ -3,10 +3,14 @@
 namespace App\Http\Requests\Location;
 
 use App\Http\Requests\BaseRequest;
-use App\Rules\Location\CheckPointExistsRule;
 
-class CreateOrUpdateLocationRequest extends BaseRequest
+class ShowLocationRequest extends BaseRequest
 {
+    protected function prepareForValidation()
+    {
+        request()->merge(['id' => request()->route('id')]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -15,8 +19,7 @@ class CreateOrUpdateLocationRequest extends BaseRequest
     public function rules()
     {
         return [
-            'latitude' => 'required|numeric|between:-90,90',
-            'longitude' => ['required', 'numeric', 'between:-180,180', new CheckPointExistsRule()],
+            'id' => 'required|numeric|min:1',
         ];
     }
 }

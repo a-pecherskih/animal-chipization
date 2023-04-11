@@ -35,10 +35,10 @@ Route::group(['middleware' => ['auth.basic']], function () {
         'controller' => \App\Http\Controllers\LocationController::class
     ], function () {
 
-        Route::get('/{location}', 'show')->name('show');
-        Route::post('/', 'create');
-        Route::put('/{location}', 'update');
-        Route::delete('/{location}', 'delete');
+        Route::get('/{id}', 'show')->name('show');
+        Route::post('/', 'store');
+        Route::put('/{id}', 'update');
+        Route::delete('/{id}', 'delete');
     });
 
     Route::group([

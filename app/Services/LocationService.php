@@ -2,37 +2,54 @@
 
 namespace App\Services;
 
-use App\Exceptions\BadRequestException;
 use App\Models\Location;
+use App\Repositories\LocationRepository;
+use App\Validators\LocationValidator;
 
 class LocationService
 {
+    private LocationRepository $repository;
+    private LocationValidator $validator;
+
+    /**
+     * LocationService constructor.
+     * @param \App\Repositories\LocationRepository $repository
+     * @param \App\Validators\LocationValidator $validator
+     */
+    public function __construct(LocationRepository $repository, LocationValidator $validator)
+    {
+        $this->repository = $repository;
+        $this->validator = $validator;
+    }
+
+    /**
+     * @throws \App\Exceptions\ModelFieldExistsException
+     */
     public function create(array $data)
     {
-        return Location::query()->create([
-            'latitude' => $data['latitude'],
-            'longitude' => $data['longitude'],
-        ]);
+        $this->validator->checkNotExistLocationWithPointOrFail($data['latitude'], $data['longitude']);
+
+        return $this->repository->create($data);
     }
 
+    /**
+     * @throws \App\Exceptions\ModelFieldExistsException
+     * @throws \App\Exceptions\BadRequestException
+     */
     public function update(Location $location, array $data)
     {
-        $location->fill([
-            'latitude' => $data['latitude'],
-            'longitude' => $data['longitude'],
-        ]);
-        $location->save();
+        $this->validator->checkNotExistLocationWithPointOrFail($data['latitude'], $data['longitude'], $location);
+        $this->validator->checkLocationIsNotVisitedOrChippingPointOrFail($location);
 
-        return $location;
+        return $this->repository->update($location, $data);
     }
 
+    /**
+     * @throws \App\Exceptions\BadRequestException
+     */
     public function delete(Location $location)
     {
-        $location->load(['visitedAnimals', 'chippingAnimals']);
-
-        if (count($location->visitedAnimals) || count($location->chippingAnimals)) {
-            throw new BadRequestException();
-        }
+        $this->validator->checkLocationIsNotVisitedOrChippingPointOrFail($location);
 
         $location->delete();
     }

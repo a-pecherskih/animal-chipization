@@ -30,7 +30,7 @@ class AccountService
 
     public function register(array $data)
     {
-        $this->validator->checkNotExistUserEmailOrThrowEx($data['email']);
+        $this->validator->checkNotExistUserEmailOrFail($data['email']);
 
         $roleId = $this->roleRepository->findByName(Role::USER)->id;
         $data['role_id'] = $roleId;
@@ -43,7 +43,7 @@ class AccountService
      */
     public function store(array $data)
     {
-        $this->validator->checkNotExistUserEmailOrThrowEx($data['email']);
+        $this->validator->checkNotExistUserEmailOrFail($data['email']);
 
         $roleId = $this->roleRepository->findByName($data['role'])->id;
         $data['role_id'] = $roleId;
@@ -56,7 +56,7 @@ class AccountService
      */
     public function update(User $user, array $data): User
     {
-        $this->validator->checkNotExistUserEmailOrThrowEx($data['email'], $user);
+        $this->validator->checkNotExistUserEmailOrFail($data['email'], $user);
 
         $roleId = $this->roleRepository->findByName($data['role'])->id;
         $data['role_id'] = $roleId;
@@ -74,7 +74,7 @@ class AccountService
      */
     public function delete(User $user)
     {
-       $this->validator->checkNotAnimalsOrThrowEx($user);
+       $this->validator->checkNotAnimalsOrFail($user);
 
         $user->delete();
     }

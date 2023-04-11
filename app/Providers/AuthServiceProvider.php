@@ -4,7 +4,9 @@ namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\LocationController;
 use App\Policies\AccountControllerPolicy;
+use App\Policies\LocationControllerPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -16,7 +18,8 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         // 'App\Models\Model' => 'App\Policies\ModelPolicy',
-        AccountController::class => AccountControllerPolicy::class
+        AccountController::class => AccountControllerPolicy::class,
+        LocationController::class => LocationControllerPolicy::class,
     ];
 
     /**

@@ -60,6 +60,11 @@ class Animal extends Model
         )->withPivot(['id', 'date_time'])->orderBy('date_time');
     }
 
+    public function chippingLocation(): BelongsTo
+    {
+        return $this->belongsTo(Location::class, 'chipping_location_id');
+    }
+
     public function types(): BelongsToMany
     {
         return $this->belongsToMany(

@@ -20,18 +20,18 @@ class AccountValidator
         $this->repository = $repository;
     }
 
-    public function checkNotExistUserEmailOrThrowEx(string $email, ?User $ignoreUser = null)
+    public function checkNotExistUserEmailOrFail(string $email, ?User $ignoreUser = null)
     {
         $user = $this->repository->findByEmail($email);
 
-        if ($user && $ignoreUser && $user->isSameUser($ignoreUser)) return true;
+        if ($user && $ignoreUser && ($user->id == $ignoreUser->id)) return true;
 
         if ($user) {
             throw new ModelFieldExistsException();
         }
     }
 
-    public function checkNotAnimalsOrThrowEx(User $user)
+    public function checkNotAnimalsOrFail(User $user)
     {
         if ($user->animals->count()) {
             throw new BadRequestException();

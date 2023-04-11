@@ -2,40 +2,65 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Location\CreateOrUpdateLocationRequest;
+use App\Http\Requests\Location\DeleteLocationRequest;
+use App\Http\Requests\Location\StoreLocationRequest;
+use App\Http\Requests\Location\UpdateLocationRequest;
 use App\Http\Resources\LocationResource;
-use App\Models\Location;
+use App\Repositories\LocationRepository;
 use App\Services\LocationService;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
 
 class LocationController extends Controller
 {
-    public function create(CreateOrUpdateLocationRequest $request, LocationService $service)
-    {
-        $data = $request->validated();
+    private LocationService $service;
+    private LocationRepository $repository;
 
-        $location = $service->create($data);
+    /**
+     * LocationController constructor.
+     * @param \App\Services\LocationService $service
+     * @param \App\Repositories\LocationRepository $repository
+     */
+    public function __construct(LocationService $service, LocationRepository $repository)
+    {
+        $this->service = $service;
+        $this->repository = $repository;
+    }
+
+    public function show(int $id)
+    {
+        $location = $this->repository->findByIdOrFail($id);
+
+        return response()->json(new LocationResource($location), Response::HTTP_OK);
+    }
+
+    public function store(StoreLocationRequest $request)
+    {
+        Gate::check('create-location', [self::class]);
+
+        $location = $this->service->create($request->validated());
 
         return response()->json(new LocationResource($location), Response::HTTP_CREATED);
     }
 
-    public function show(Location $location)
+    public function update(UpdateLocationRequest $request, int $id)
     {
+        Gate::check('update-location', [self::class]);
+
+        $location = $this->repository->findByIdOrFail($id);
+
+        $location = $this->service->update($location, $request->validated());
+
         return response()->json(new LocationResource($location), Response::HTTP_OK);
     }
 
-    public function update(Location $location, CreateOrUpdateLocationRequest $request, LocationService $service)
+    public function delete(int $id, DeleteLocationRequest $request)
     {
-        $data = $request->validated();
+        Gate::check('delete-location', [self::class]);
 
-        $location = $service->update($location, $data);
+        $location = $this->repository->findByIdOrFail($id);
 
-        return response()->json(new LocationResource($location), Response::HTTP_OK);
-    }
-
-    public function delete(Location $location, LocationService $service)
-    {
-        $service->delete($location);
+        $this->service->delete($location);
 
         return response()->json([], Response::HTTP_OK);
     }
