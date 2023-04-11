@@ -3,40 +3,58 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AnimalType\CreateAnimalTypeRequest;
+use App\Http\Requests\AnimalType\DeleteAnimalTypeRequest;
+use App\Http\Requests\AnimalType\ShowAnimalTypeRequest;
 use App\Http\Requests\AnimalType\UpdateAnimalTypeRequest;
 use App\Http\Resources\AnimalTypeResource;
-use App\Models\AnimalType;
+use App\Repositories\AnimalTypeRepository;
 use App\Services\AnimalTypeService;
 use Symfony\Component\HttpFoundation\Response;
 
 class AnimalTypeController extends Controller
 {
-    public function create(CreateAnimalTypeRequest $request, AnimalTypeService $service)
-    {
-        $data = $request->validated();
+    private AnimalTypeService $service;
+    private AnimalTypeRepository $repository;
 
-        $animalType = $service->create($data);
+    /**
+     * AnimalTypeController constructor.
+     * @param \App\Services\AnimalTypeService $service
+     * @param \App\Repositories\AnimalTypeRepository $repository
+     */
+    public function __construct(AnimalTypeService $service, AnimalTypeRepository $repository)
+    {
+        $this->service = $service;
+        $this->repository = $repository;
+    }
+
+    public function show(int $id, ShowAnimalTypeRequest $request)
+    {
+        $animalType = $this->repository->findByIdOrFail($id);
+
+        return response()->json(new AnimalTypeResource($animalType), Response::HTTP_OK);
+    }
+
+    public function create(CreateAnimalTypeRequest $request)
+    {
+        $animalType = $this->service->create($request->validated());
 
         return response()->json(new AnimalTypeResource($animalType), Response::HTTP_CREATED);
     }
 
-    public function show(AnimalType $animalType)
+    public function update(int $id, UpdateAnimalTypeRequest $request)
     {
-        return response()->json(new AnimalTypeResource($animalType), Response::HTTP_OK);
-    }
+        $animalType = $this->repository->findByIdOrFail($id);
 
-    public function update(AnimalType $animalType, UpdateAnimalTypeRequest $request, AnimalTypeService $service)
-    {
-        $data = $request->validated();
-
-        $animalType = $service->update($animalType, $data);
+        $animalType = $this->service->update($animalType, $request->validated());
 
         return response()->json(new AnimalTypeResource($animalType), Response::HTTP_OK);
     }
 
-    public function delete(AnimalType $animalType, AnimalTypeService $service)
+    public function delete(int $id, DeleteAnimalTypeRequest $request)
     {
-        $service->delete($animalType);
+        $animalType = $this->repository->findByIdOrFail($id);
+
+        $this->service->delete($animalType);
 
         return response()->json([], Response::HTTP_OK);
     }

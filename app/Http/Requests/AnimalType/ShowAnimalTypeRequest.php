@@ -4,8 +4,13 @@ namespace App\Http\Requests\AnimalType;
 
 use App\Http\Requests\BaseRequest;
 
-class UpdateAnimalTypeRequest extends BaseRequest
+class ShowAnimalTypeRequest extends BaseRequest
 {
+    protected function prepareForValidation()
+    {
+        request()->merge(['id' => request()->route('id')]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -14,7 +19,7 @@ class UpdateAnimalTypeRequest extends BaseRequest
     public function rules()
     {
         return [
-            'type' => 'required|string',
+            'id' => 'required|numeric|min:1',
         ];
     }
 }

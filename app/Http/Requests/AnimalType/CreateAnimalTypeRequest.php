@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\AnimalType;
 
-use App\Exceptions\ModelFieldExistsException;
 use App\Http\Requests\BaseRequest;
 
 class CreateAnimalTypeRequest extends BaseRequest
@@ -15,14 +14,7 @@ class CreateAnimalTypeRequest extends BaseRequest
     public function rules()
     {
         return [
-            'type' => 'required|string|unique:animal_types,type',
+            'type' => 'required|string',
         ];
-    }
-
-    protected function afterValidation($validator)
-    {
-        if (isset($validator->failed()['type']['Unique'])) {
-            throw new ModelFieldExistsException;
-        }
     }
 }
