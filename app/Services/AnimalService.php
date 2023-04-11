@@ -10,12 +10,12 @@ use Illuminate\Support\Collection;
 class AnimalService
 {
     private AnimalRepository $repository;
-    private AnimalRepository $validator;
+    private AnimalValidator $validator;
 
     /**
      * AnimalService constructor.
      * @param \App\Repositories\AnimalRepository $repository
-     * @param \App\Repositories\AnimalRepository $validator
+     * @param \App\Validators\AnimalValidator $validator
      */
     public function __construct(AnimalRepository $repository, AnimalValidator $validator)
     {
