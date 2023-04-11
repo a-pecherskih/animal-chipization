@@ -41,7 +41,7 @@ class AccountService
     /**
      * @throws \App\Exceptions\ModelFieldExistsException
      */
-    public function store(array $data)
+    public function create(array $data)
     {
         $this->validator->checkNotExistUserEmailOrFail($data['email']);
 

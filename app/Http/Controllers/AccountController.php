@@ -55,11 +55,11 @@ class AccountController extends Controller
         return response()->json(AccountResource::collection($accounts), Response::HTTP_OK);
     }
 
-    public function store(StoreAccountRequest $request)
+    public function create(StoreAccountRequest $request)
     {
-        Gate::check('store-account', [self::class]);
+        Gate::check('create-account', [self::class]);
 
-        $user = $this->service->store($request->validated());
+        $user = $this->service->create($request->validated());
 
         return response()->json(new AccountResource($user), Response::HTTP_CREATED);
     }

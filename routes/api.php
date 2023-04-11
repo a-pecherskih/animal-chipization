@@ -23,7 +23,7 @@ Route::group(['middleware' => ['auth.basic']], function () {
         'controller' => \App\Http\Controllers\AccountController::class
     ], function () {
         Route::get('/search', 'search')->name('search');
-        Route::post('/', 'store')->name('store');
+        Route::post('/', 'create')->name('create');
         Route::get('/{id}', 'show')->name('show');
         Route::put('/{id}', 'update')->name('update');
         Route::delete('/{id}', 'delete')->name('delete');
@@ -58,10 +58,10 @@ Route::group(['middleware' => ['auth.basic']], function () {
             'as' => 'type.',
             'controller' => \App\Http\Controllers\AnimalTypeController::class
         ], function () {
-            Route::get('/{animalType}', 'show')->name('show');
+            Route::get('/{id}', 'show')->name('show');
             Route::post('/', 'create');
-            Route::put('/{animalType}', 'update');
-            Route::delete('/{animalType}', 'delete');
+            Route::put('/{id}', 'update');
+            Route::delete('/{id}', 'delete');
         });
 
         Route::group([

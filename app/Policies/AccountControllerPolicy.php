@@ -2,7 +2,6 @@
 
 namespace App\Policies;
 
-use App\Exceptions\ForbiddenException;
 use App\Exceptions\ModelNotFoundException;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -11,54 +10,46 @@ class AccountControllerPolicy
 {
     use HandlesAuthorization;
 
-    public function getAccount(User $authUser, ?User $user)
+    public function getAccount(User $user, ?User $account)
     {
-        if (!$authUser->isAdmin() && (optional($user)->id != $authUser->id)) {
-            throw new ForbiddenException();
+        if (!$user->isAdmin() && (optional($account)->id != $user->id)) {
+            return false;
         }
-        if ($authUser->isAdmin() && blank($user)) {
+        if ($user->isAdmin() && blank($account)) {
             throw new ModelNotFoundException();
         }
 
         return true;
     }
 
-    public function searchAccount(User $authUser)
+    public function searchAccount(User $user)
     {
-        if (!$authUser->isAdmin()) {
-            throw new ForbiddenException();
-        }
-
-        return true;
+        return $user->isAdmin();
     }
 
-    public function storeAccount(User $authUser)
+    public function createAccount(User $user)
     {
-        if (!$authUser->isAdmin()) {
-            throw new ForbiddenException();
-        }
-
-        return true;
+        return $user->isAdmin();
     }
 
-    public function updateAccount(User $authUser, ?User $user)
+    public function updateAccount(User $user, ?User $account)
     {
-        if (!$authUser->isAdmin() && (optional($user)->id != $authUser->id)) {
-            throw new ForbiddenException();
+        if (!$user->isAdmin() && (optional($account)->id != $user->id)) {
+            return false;
         }
-        if ($authUser->isAdmin() && blank($user)) {
+        if ($user->isAdmin() && blank($account)) {
             throw new ModelNotFoundException();
         }
 
         return true;
     }
 
-    public function deleteAccount(User $authUser, ?User $user)
+    public function deleteAccount(User $user, ?User $account)
     {
-        if (!$authUser->isAdmin() && (optional($user)->id != $authUser->id)) {
-            throw new ForbiddenException();
+        if (!$user->isAdmin() && (optional($account)->id != $user->id)) {
+            return false;
         }
-        if ($authUser->isAdmin() && blank($user)) {
+        if ($user->isAdmin() && blank($account)) {
             throw new ModelNotFoundException();
         }
 

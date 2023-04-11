@@ -5,21 +5,21 @@ namespace App\Policies;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class LocationControllerPolicy
+class AnimalTypeControllerPolicy
 {
     use HandlesAuthorization;
 
-    public function createLocation(User $user)
+    public function createAnimalType(User $user)
     {
         return ($user->isAdmin() || $user->isChipper());
     }
 
-    public function updateLocation(User $user)
+    public function updateAnimalType(User $user)
     {
         return ($user->isAdmin() || $user->isChipper());
     }
 
-    public function deleteLocation(User $user)
+    public function deleteAnimalType(User $user)
     {
         return $user->isAdmin();
     }

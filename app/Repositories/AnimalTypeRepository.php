@@ -6,9 +6,13 @@ use App\Models\AnimalType;
 
 class AnimalTypeRepository
 {
-    public function findByIdOrFail(int $id): ?AnimalType
+    public function findByIdOrFail(int $id, $with = []): ?AnimalType
     {
-        return AnimalType::findOrFail($id);
+        return AnimalType::query()
+            ->when(!empty($with), function ($q) use ($with) {
+                $q->with($with);
+            })
+            ->findOrFail($id);
     }
 
     public function findByType(string $type): ?AnimalType

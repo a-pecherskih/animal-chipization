@@ -9,6 +9,7 @@ use App\Http\Requests\AnimalType\UpdateAnimalTypeRequest;
 use App\Http\Resources\AnimalTypeResource;
 use App\Repositories\AnimalTypeRepository;
 use App\Services\AnimalTypeService;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
 
 class AnimalTypeController extends Controller
@@ -36,6 +37,8 @@ class AnimalTypeController extends Controller
 
     public function create(CreateAnimalTypeRequest $request)
     {
+        Gate::check('create-animal-type', [self::class]);
+
         $animalType = $this->service->create($request->validated());
 
         return response()->json(new AnimalTypeResource($animalType), Response::HTTP_CREATED);
@@ -43,6 +46,8 @@ class AnimalTypeController extends Controller
 
     public function update(int $id, UpdateAnimalTypeRequest $request)
     {
+        Gate::check('update-animal-type', [self::class]);
+
         $animalType = $this->repository->findByIdOrFail($id);
 
         $animalType = $this->service->update($animalType, $request->validated());
@@ -52,7 +57,9 @@ class AnimalTypeController extends Controller
 
     public function delete(int $id, DeleteAnimalTypeRequest $request)
     {
-        $animalType = $this->repository->findByIdOrFail($id);
+        Gate::check('delete-animal-type', [self::class]);
+
+        $animalType = $this->repository->findByIdOrFail($id, ['animals']);
 
         $this->service->delete($animalType);
 
