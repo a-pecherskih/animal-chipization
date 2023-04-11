@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Location\DeleteLocationRequest;
-use App\Http\Requests\Location\StoreLocationRequest;
+use App\Http\Requests\Location\CreateLocationRequest;
 use App\Http\Requests\Location\UpdateLocationRequest;
 use App\Http\Resources\LocationResource;
 use App\Repositories\LocationRepository;
@@ -34,7 +34,7 @@ class LocationController extends Controller
         return response()->json(new LocationResource($location), Response::HTTP_OK);
     }
 
-    public function store(StoreLocationRequest $request)
+    public function create(CreateLocationRequest $request)
     {
         Gate::check('create-location', [self::class]);
 

@@ -4,6 +4,7 @@ namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\AnimalController;
 use App\Http\Controllers\AnimalTypeController;
 use App\Http\Controllers\LocationController;
 use App\Policies\AccountControllerPolicy;
@@ -23,6 +24,7 @@ class AuthServiceProvider extends ServiceProvider
         AccountController::class => AccountControllerPolicy::class,
         LocationController::class => LocationControllerPolicy::class,
         AnimalTypeController::class => AnimalTypeControllerPolicy::class,
+        AnimalController::class => AnimalCon::class,
     ];
 
     /**

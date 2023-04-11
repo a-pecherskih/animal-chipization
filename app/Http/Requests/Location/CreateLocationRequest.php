@@ -4,7 +4,7 @@ namespace App\Http\Requests\Location;
 
 use App\Http\Requests\BaseRequest;
 
-class StoreLocationRequest extends BaseRequest
+class CreateLocationRequest extends BaseRequest
 {
     /**
      * Get the validation rules that apply to the request.

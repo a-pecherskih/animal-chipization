@@ -10,6 +10,11 @@ use App\Rules\Animal\ChangeLifeStatusRule;
 
 class UpdateAnimalRequest extends BaseRequest
 {
+    protected function prepareForValidation()
+    {
+        request()->merge(['id' => request()->route('id')]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -18,6 +23,7 @@ class UpdateAnimalRequest extends BaseRequest
     public function rules()
     {
         return [
+            'id' => 'required|numeric|min:1',
             'weight' => 'required|numeric|gt:0',
             'length' => 'required|numeric|gt:0',
             'height' => 'required|numeric|gt:0',

@@ -36,7 +36,7 @@ Route::group(['middleware' => ['auth.basic']], function () {
     ], function () {
 
         Route::get('/{id}', 'show')->name('show');
-        Route::post('/', 'store');
+        Route::post('/', 'create');
         Route::put('/{id}', 'update');
         Route::delete('/{id}', 'delete');
     });

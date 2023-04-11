@@ -5,7 +5,7 @@ namespace App\Http\Requests\Account;
 use App\Http\Requests\BaseRequest;
 use App\Models\Role;
 
-class StoreAccountRequest extends BaseRequest
+class CreateAccountRequest extends BaseRequest
 {
     /**
      * Get the validation rules that apply to the request.

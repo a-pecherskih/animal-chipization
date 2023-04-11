@@ -6,7 +6,7 @@ use App\Http\Requests\Account\DeleteAccountRequest;
 use App\Http\Requests\Account\RegistrationRequest;
 use App\Http\Requests\Account\SearchAccountsRequest;
 use App\Http\Requests\Account\ShowAccountRequest;
-use App\Http\Requests\Account\StoreAccountRequest;
+use App\Http\Requests\Account\CreateAccountRequest;
 use App\Http\Requests\Account\UpdateAccountRequest;
 use App\Http\Resources\AccountResource;
 use App\Repositories\AccountRepository;
@@ -55,7 +55,7 @@ class AccountController extends Controller
         return response()->json(AccountResource::collection($accounts), Response::HTTP_OK);
     }
 
-    public function create(StoreAccountRequest $request)
+    public function create(CreateAccountRequest $request)
     {
         Gate::check('create-account', [self::class]);
 
