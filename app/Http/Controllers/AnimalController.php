@@ -8,7 +8,6 @@ use App\Http\Requests\Animal\SearchAnimalRequest;
 use App\Http\Requests\Animal\ShowAnimalRequest;
 use App\Http\Requests\Animal\UpdateAnimalRequest;
 use App\Http\Resources\AnimalResource;
-use App\Repositories\AnimalRepository;
 use App\Services\AnimalService;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,22 +15,15 @@ use Symfony\Component\HttpFoundation\Response;
 class AnimalController extends Controller
 {
     private AnimalService $service;
-    private AnimalRepository $repository;
 
-    /**
-     * AnimalController constructor.
-     * @param \App\Services\AnimalService $service
-     * @param \App\Repositories\AnimalRepository $repository
-     */
-    public function __construct(AnimalService $service, AnimalRepository $repository)
+    public function __construct(AnimalService $service)
     {
         $this->service = $service;
-        $this->repository = $repository;
     }
 
-    public function show(int $id, ShowAnimalRequest $request)
+    public function show(int $animalId, ShowAnimalRequest $request)
     {
-        $animal = $this->repository->findByIdOrFail($id, ['types', 'visitedLocations']);
+        $animal = $this->service->show($animalId);
 
         return response()->json(new AnimalResource($animal), Response::HTTP_OK);
     }
@@ -52,24 +44,20 @@ class AnimalController extends Controller
         return response()->json(new AnimalResource($animal), Response::HTTP_CREATED);
     }
 
-    public function update(int $id, UpdateAnimalRequest $request)
+    public function update(int $animalId, UpdateAnimalRequest $request)
     {
         Gate::check('update-animal', [self::class]);
 
-        $animal = $this->repository->findByIdOrFail($id,['types', 'visitedLocations']);
-
-        $animal = $this->service->update($animal, $request->validated());
+        $animal = $this->service->update($animalId, $request->validated());
 
         return response()->json(new AnimalResource($animal), Response::HTTP_OK);
     }
 
-    public function delete(int $id, DeleteAnimalRequest $request)
+    public function delete(int $animalId, DeleteAnimalRequest $request)
     {
         Gate::check('delete-animal', [self::class]);
 
-        $animal = $this->repository->findByIdOrFail($id, ['visitedLocations']);
-
-        $this->service->delete($animal);
+        $this->service->delete($animalId);
 
         return response()->json([], Response::HTTP_OK);
     }

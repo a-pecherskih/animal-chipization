@@ -17,27 +17,14 @@ class CreateAnimalRequest extends BaseRequest
     public function rules()
     {
         return [
-            'animalTypes' => 'required|array',
-            'animalTypes.*' => 'required|distinct|gt:0|bail|exists:animal_types,id',
+            'animalTypes' => 'required|array|min:1',
+            'animalTypes.*' => 'required|distinct|gt:0',
             'weight' => 'required|numeric|gt:0',
             'length' => 'required|numeric|gt:0',
             'height' => 'required|numeric|gt:0',
             'gender' => 'required|in:' . implode(',', Animal::getGendersList()),
-            'chipperId' => 'required|gt:0|bail|exists:users,id',
-            'chippingLocationId' => 'required|gt:0|bail|exists:locations,id',
+            'chipperId' => 'required|gt:0',
+            'chippingLocationId' => 'required|gt:0',
         ];
-    }
-
-    protected function afterValidation($validator)
-    {
-        if (isset($validator->failed()['animalTypes.0']['Distinct'])) {
-            throw new ModelFieldExistsException();
-        }
-        if (isset($validator->failed()['animalTypes.0']['Exists'])
-            || isset($validator->failed()['chipperId']['Exists'])
-            || isset($validator->failed()['chippingLocationId']['Exists'])
-        ) {
-            throw new ModelNotFoundException;
-        }
     }
 }

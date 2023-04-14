@@ -92,4 +92,9 @@ class AnimalRepository
 
         return $animal;
     }
+
+    public function delete(Animal $animal)
+    {
+        $animal->delete();
+    }
 }

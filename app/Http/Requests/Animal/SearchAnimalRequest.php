@@ -17,8 +17,8 @@ class SearchAnimalRequest extends BaseRequest
         return [
             'startDateTime' => 'date|nullable',
             'endDateTime' => 'date|nullable',
-            'chipperId' => 'numeric|gt:0|bail|exists:users,id|nullable',
-            'chippingLocationId' => 'nullable|gt:0|bail|exists:locations,id',
+            'chipperId' => 'numeric|min:1',
+            'chippingLocationId' => 'numeric|min:1',
             'lifeStatus' => 'nullable|in:' . implode(',', Animal::getStatusesList()),
             'gender' => 'nullable|in:' . implode(',', Animal::getGendersList()),
             'from' => 'nullable|integer|min:0',

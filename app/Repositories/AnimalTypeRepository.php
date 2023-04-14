@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\AnimalType;
+use Illuminate\Database\Eloquent\Collection;
 
 class AnimalTypeRepository
 {
@@ -13,6 +14,13 @@ class AnimalTypeRepository
                 $q->with($with);
             })
             ->findOrFail($id);
+    }
+
+    public function findByIds(array $ids): Collection
+    {
+        return AnimalType::query()
+            ->whereIn('id', $ids)
+            ->get();
     }
 
     public function findByType(string $type): ?AnimalType

@@ -8,7 +8,7 @@ class DeleteAnimalRequest extends BaseRequest
 {
     protected function prepareForValidation()
     {
-        request()->merge(['id' => request()->route('id')]);
+        request()->merge(['animalId' => request()->route('animalId')]);
     }
 
     /**
@@ -19,7 +19,7 @@ class DeleteAnimalRequest extends BaseRequest
     public function rules()
     {
         return [
-            'id' => 'required|numeric|min:1',
+            'animalId' => 'required|numeric|min:1',
         ];
     }
 }

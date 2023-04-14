@@ -48,10 +48,10 @@ Route::group(['middleware' => ['auth.basic']], function () {
     ], function () {
 
         Route::get('/search', 'search')->name('search');
-        Route::get('/{id}', 'show')->name('show');
+        Route::get('/{animalId}', 'show')->name('show');
         Route::post('/', 'create');
-        Route::put('/{id}', 'update');
-        Route::delete('/{id}', 'delete');
+        Route::put('/{animalId}', 'update');
+        Route::delete('/{animalId}', 'delete');
 
         Route::group([
             'prefix' => 'types',

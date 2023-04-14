@@ -4,6 +4,7 @@ namespace App\Validators;
 
 use App\Exceptions\BadRequestException;
 use App\Exceptions\ModelFieldExistsException;
+use App\Exceptions\ModelNotFoundException;
 use App\Models\AnimalType;
 use App\Repositories\AnimalTypeRepository;
 
@@ -35,6 +36,15 @@ class AnimalTypeValidator
     {
         if (count($animalType->animals) > 0) {
             throw new BadRequestException();
+        }
+    }
+
+    public function hasAllTypesOrFail(array $ids)
+    {
+        $animalTypes = $this->repository->findByIds($ids);
+
+        if ($animalTypes->count() != count($ids)) {
+            throw new ModelNotFoundException();
         }
     }
 }

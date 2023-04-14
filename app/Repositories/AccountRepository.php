@@ -9,6 +9,13 @@ use Illuminate\Support\Facades\Hash;
 
 class AccountRepository
 {
+    public function findByIdOrFail(int $id, $with = ['role']): User
+    {
+        return User::query()
+            ->with($with)
+            ->findOrFail($id);
+    }
+
     public function findById(int $id, $with = ['role']): ?User
     {
         return User::query()
