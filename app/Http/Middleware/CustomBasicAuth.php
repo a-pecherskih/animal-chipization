@@ -41,17 +41,21 @@ class CustomBasicAuth
      */
     public function handle(Request $request, Closure $next, $guard = null, $field = null)
     {
-        /**
-         * Если регистрация под авторизационным акком, то недопускаем
-         */
-        if ($request->hasHeader('Authorization') && $request->route()->getName() == 'registration') {
-            try {
-                $this->auth->guard($guard)->basic($field ?: 'email');
+        if ($request->route()->getName() == 'registration') {
+            /**
+             * Если регистрация под авторизационным акком, то недопускаем
+             */
+            if ($request->hasHeader('Authorization')) {
+                try {
+                    $this->auth->guard($guard)->basic($field ?: 'email');
 
-                throw new ForbiddenException();
-            } catch (UnauthorizedHttpException $e) {
-                return $next($request);
+                    throw new ForbiddenException();
+                } catch (UnauthorizedHttpException $e) {
+                    return $next($request);
+                }
             }
+
+            return $next($request);
         }
 
         $this->auth->guard($guard)->basic($field ?: 'email');

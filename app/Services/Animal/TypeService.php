@@ -40,8 +40,7 @@ class TypeService
         $animal = $this->animalRepository->findByIdOrFail($animalId);
         $animalType = $this->animalTypeRepository->findByIdOrFail($typeId);
 
-        $animal->types()->attach($animalType->id);
-        return $animal->load('types');
+        return $this->typeRepository->addTypeToAnimal($animal, $animalType);
     }
 
     public function changeType(int $animalId, array $data)
@@ -54,9 +53,7 @@ class TypeService
         $this->typeValidator->checkAnimalAlreadyHasTypeOrFail($animal, $oldAnimalType);
         $this->typeValidator->checkAnimalAlreadyHasTypeOrFail($animal, $newAnimalType);
 
-        $this->typeRepository->updateTypeOfAnimal($animal, $oldAnimalType, $newAnimalType);
-
-        return $animal->load('types');
+        return $this->typeRepository->updateTypeOfAnimal($animal, $oldAnimalType, $newAnimalType);
     }
 
     public function deleteType(int $animalId, int $typeId)

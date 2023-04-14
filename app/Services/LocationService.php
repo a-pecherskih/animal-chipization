@@ -47,10 +47,12 @@ class LocationService
     /**
      * @throws \App\Exceptions\BadRequestException
      */
-    public function delete(Location $location)
+    public function delete(int $locationId)
     {
+        $location = $this->repository->findByIdOrFail($locationId);
+
         $this->validator->checkLocationIsNotVisitedOrChippingPointOrFail($location);
 
-        $location->delete();
+        $this->repository->delete($location);
     }
 }

@@ -5,21 +5,9 @@ namespace App\Validators;
 use App\Exceptions\BadRequestException;
 use App\Models\Animal;
 use App\Models\Location;
-use App\Repositories\AnimalRepository;
 
 class AnimalValidator
 {
-    private AnimalRepository $repository;
-
-    /**
-     * AccountValidator constructor.
-     * @param \App\Repositories\AnimalRepository $repository
-     */
-    public function __construct(AnimalRepository $repository)
-    {
-        $this->repository = $repository;
-    }
-
     public function animalDoestHaveVisitedLocationOrFail(Animal $animal)
     {
         if ($animal->visitedLocations->count()) {

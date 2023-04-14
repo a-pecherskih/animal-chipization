@@ -15,7 +15,7 @@ class AddUsersSeeder extends Seeder
      */
     public function run()
     {
-        $data = [
+        $users = [
             [
                 'id' => 1,
                 'firstName' => 'adminFirstName',
@@ -42,14 +42,13 @@ class AddUsersSeeder extends Seeder
             ]
         ];
 
-        foreach ($data as $item) {
+        foreach ($users as $user) {
             User::query()->create([
-                'id' => $item['id'],
-                'first_name' => $item['firstName'],
-                'last_name' => $item['lastName'],
-                'email' => $item['email'],
-                'password' => Hash::make($item['password']),
-                'role_id' => $item['role_id'],
+                'first_name' => $user['firstName'],
+                'last_name' => $user['lastName'],
+                'email' => $user['email'],
+                'password' => Hash::make($user['password']),
+                'role_id' => $user['role_id'],
             ]);
         }
     }

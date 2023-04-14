@@ -11,7 +11,7 @@ class TypeValidator
 {
     public function checkAnimalHasTypeOrFail(Animal $animal, AnimalType $animalType)
     {
-        $existType = $animal->type->firstWhere('id', $animalType->id);
+        $existType = $animal->types->firstWhere('id', $animalType->id);
 
         if (blank($existType)) {
             throw new ModelNotFoundException();
@@ -22,7 +22,7 @@ class TypeValidator
 
     public function checkAnimalAlreadyHasTypeOrFail(Animal $animal, AnimalType $animalType)
     {
-        $existType = $animal->type->firstWhere('id', $animalType->id);
+        $existType = $animal->types->firstWhere('id', $animalType->id);
 
         if (!blank($existType)) {
             throw new ModelFieldExistsException();

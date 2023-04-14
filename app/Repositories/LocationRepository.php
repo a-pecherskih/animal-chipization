@@ -6,17 +6,17 @@ use App\Models\Location;
 
 class LocationRepository
 {
-    public function findById(int $id): Location
+    public function findById(int $id): ?Location
     {
         return Location::query()->firstWhere('id', $id);
     }
 
     public function findByIdOrFail(int $id): Location
     {
-        return Location::query()->findOrFail('id', $id);
+        return Location::query()->findOrFail($id);
     }
 
-    public function findByLatAndLon($latitude, $longitude): Location
+    public function findByLatAndLon($latitude, $longitude): ?Location
     {
         return Location::query()
             ->firstWhere([
@@ -42,5 +42,10 @@ class LocationRepository
         $location->save();
 
         return $location;
+    }
+
+    public function delete(Location $location)
+    {
+        $location->delete();
     }
 }

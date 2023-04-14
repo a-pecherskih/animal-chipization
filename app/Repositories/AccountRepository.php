@@ -69,13 +69,13 @@ class AccountRepository
 
         return User::query()
             ->when($firstName, function (Builder $q) use ($firstName) {
-                $q->where('first_name', 'like', "%$firstName%");
+                $q->where('first_name', 'ilike', "%$firstName%");
             })
             ->when($lastName, function (Builder $q) use ($lastName) {
-                $q->where('last_name', 'like', "%$lastName%");
+                $q->where('last_name', 'ilike', "%$lastName%");
             })
             ->when($email, function (Builder $q) use ($email) {
-                $q->where('email', 'like', "%$email%");
+                $q->where('email', 'ilike', "%$email%");
             })
             ->offset($from)
             ->limit($size)

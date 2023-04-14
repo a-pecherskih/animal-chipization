@@ -8,7 +8,14 @@ use App\Models\AnimalType;
 
 class TypeRepository
 {
-    public function updateTypeOfAnimal(Animal $animal, AnimalType $oldType, AnimalType $newType)
+    public function addTypeToAnimal(Animal $animal, AnimalType $newType): Animal
+    {
+        $animal->types()->attach($newType->id);
+
+        return $animal->load('types');
+    }
+
+    public function updateTypeOfAnimal(Animal $animal, AnimalType $oldType, AnimalType $newType): Animal
     {
         AnimalAnimalType::query()
             ->where('animal_id', $animal->id)
@@ -16,6 +23,8 @@ class TypeRepository
             ->update([
                 'animal_type_id' => $newType->id
             ]);
+
+        return $animal->load('types');
     }
 
     public function deleteTypeFromAnimal(Animal $animal, AnimalType $animalType)

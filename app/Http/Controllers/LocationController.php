@@ -58,9 +58,7 @@ class LocationController extends Controller
     {
         Gate::check('delete-location', [self::class]);
 
-        $location = $this->repository->findByIdOrFail($id);
-
-        $this->service->delete($location);
+        $this->service->delete($id);
 
         return response()->json([], Response::HTTP_OK);
     }

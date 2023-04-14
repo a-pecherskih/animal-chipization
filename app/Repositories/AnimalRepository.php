@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Animal;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Collection;
 
 class AnimalRepository
 {
@@ -54,7 +54,7 @@ class AnimalRepository
             ->get();
     }
 
-    public function create(array $data)
+    public function create(array $data): Animal
     {
         $animal = Animal::query()->create([
             'weight' => $data['weight'],
@@ -72,7 +72,7 @@ class AnimalRepository
         return $animal->load(['types', 'visitedLocations']);
     }
 
-    public function update(Animal $animal, array $data)
+    public function update(Animal $animal, array $data): Animal
     {
         $animal->fill([
             'weight' => $data['weight'],
@@ -93,7 +93,7 @@ class AnimalRepository
         return $animal;
     }
 
-    public function delete(Animal $animal)
+    public function delete(Animal $animal): void
     {
         $animal->delete();
     }

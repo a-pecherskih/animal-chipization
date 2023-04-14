@@ -30,7 +30,7 @@ class VisitedLocationValidator
      */
     public function animalIsNotAlreadyInThisPointOrFail(Animal $animal, Location $location)
     {
-        $isLastPoint = $animal->visitedLocations->last()->id == $location->id;
+        $isLastPoint = $animal->visitedLocations->count() && $animal->visitedLocations->last()->id == $location->id;
 
         if ($isLastPoint) {
             throw new BadRequestException();
