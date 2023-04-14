@@ -9,9 +9,11 @@ use App\Http\Controllers\AnimalTypeController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\LocationController;
 use App\Policies\AccountControllerPolicy;
+use App\Policies\Animal\TypeControllerPolicy;
 use App\Policies\AnimalTypeControllerPolicy;
 use App\Policies\AreaControllerPolicy;
 use App\Policies\LocationControllerPolicy;
+use App\Services\Animal\TypeService;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -28,6 +30,7 @@ class AuthServiceProvider extends ServiceProvider
         AnimalTypeController::class => AnimalTypeControllerPolicy::class,
         AnimalController::class => AnimalTypeControllerPolicy::class,
         AreaController::class => AreaControllerPolicy::class,
+        TypeService::class => TypeControllerPolicy::class,
     ];
 
     /**

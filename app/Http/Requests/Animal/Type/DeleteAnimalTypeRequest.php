@@ -2,12 +2,18 @@
 
 namespace App\Http\Requests\Animal\Type;
 
-use App\Exceptions\BadRequestException;
-use App\Exceptions\ModelNotFoundException;
 use App\Http\Requests\BaseRequest;
 
 class DeleteAnimalTypeRequest extends BaseRequest
 {
+    protected function prepareForValidation()
+    {
+        request()->merge([
+            'animalId' => request()->route('animalId'),
+            'typeId' => request()->route('typeId'),
+        ]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -15,17 +21,9 @@ class DeleteAnimalTypeRequest extends BaseRequest
      */
     public function rules()
     {
-        $animal = request()->route('animal');
-        $type = request()->route('animalType');
-
-        if (!$animal->types->firstWhere('id', $type->id)) {
-            throw new ModelNotFoundException();
-        }
-
-        if (count($animal->types) == 1 && $animal->types->first()->id == $type->id) {
-            throw new BadRequestException();
-        }
-
-        return [];
+        return [
+            'animalId' => 'required|numeric|min:1',
+            'typeId' => 'required|numeric|min:1',
+        ];
     }
 }

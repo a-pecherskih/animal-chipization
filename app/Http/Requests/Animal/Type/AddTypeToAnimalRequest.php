@@ -2,26 +2,28 @@
 
 namespace App\Http\Requests\Animal\Type;
 
-use App\Exceptions\ModelFieldExistsException;
 use App\Http\Requests\BaseRequest;
 
 class AddTypeToAnimalRequest extends BaseRequest
 {
+    protected function prepareForValidation()
+    {
+        request()->merge([
+            'animalId' => request()->route('animalId'),
+            'typeId' => request()->route('typeId'),
+        ]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, mixed>
-     * @throws \App\Exceptions\ModelFieldExistsException
      */
     public function rules()
     {
-        $animal = request()->route('animal');
-        $type = request()->route('animalType');
-
-        if ($animal->types->firstWhere('id', $type->id)) {
-            throw new ModelFieldExistsException();
-        }
-
-        return [];
+        return [
+            'animalId' => 'required|numeric|min:1',
+            'typeId' => 'required|numeric|min:1',
+        ];
     }
 }

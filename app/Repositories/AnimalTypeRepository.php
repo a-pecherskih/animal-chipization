@@ -27,7 +27,7 @@ class AnimalTypeRepository
         ]);
     }
 
-    public function update($animalType, array $data): AnimalType
+    public function update(AnimalType $animalType, array $data): AnimalType
     {
         $animalType->fill([
             'type' => $data['type'],
@@ -35,5 +35,10 @@ class AnimalTypeRepository
         $animalType->save();
 
         return $animalType;
+    }
+
+    public function delete(AnimalType $animalType)
+    {
+        $animalType->delete();
     }
 }

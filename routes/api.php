@@ -48,10 +48,10 @@ Route::group(['middleware' => ['auth.basic']], function () {
     ], function () {
 
         Route::get('/search', 'search')->name('search');
-        Route::get('/{animal}', 'show')->name('show');
+        Route::get('/{id}', 'show')->name('show');
         Route::post('/', 'create');
-        Route::put('/{animal}', 'update');
-        Route::delete('/{animal}', 'delete');
+        Route::put('/{id}', 'update');
+        Route::delete('/{id}', 'delete');
 
         Route::group([
             'prefix' => 'types',
@@ -65,24 +65,24 @@ Route::group(['middleware' => ['auth.basic']], function () {
         });
 
         Route::group([
-            'prefix' => '{animal}/types',
+            'prefix' => '{animalId}/types',
             'as' => 'type.',
             'controller' => \App\Http\Controllers\Animal\TypeController::class
         ], function () {
-            Route::post('/{animalType}', 'create');
+            Route::post('/{typeId}', 'create');
             Route::put('/', 'update');
-            Route::delete('/{animalType}', 'delete');
+            Route::delete('/{typeId}', 'delete');
         });
 
         Route::group([
-            'prefix' => '{animal}/locations',
+            'prefix' => '{animalId}/locations',
             'as' => 'location.',
             'controller' => \App\Http\Controllers\Animal\VisitedLocationController::class
         ], function () {
             Route::get('/', 'search')->name('search');
-            Route::post('/{location}', 'create');
+            Route::post('/{pointId}', 'create');
             Route::put('/', 'update');
-            Route::delete('/{animalLocation}', 'delete');
+            Route::delete('/{pointId}', 'delete');
         });
     });
 });

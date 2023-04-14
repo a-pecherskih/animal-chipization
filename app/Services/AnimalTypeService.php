@@ -40,6 +40,6 @@ class AnimalTypeService
     {
         $this->validator->checkNotExistAnimalsWithTypeOrThrowEx($animalType);
 
-        $animalType->delete();
+        $this->repository->delete($animalType);
     }
 }

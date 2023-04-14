@@ -2,13 +2,17 @@
 
 namespace App\Http\Requests\Animal\Type;
 
-use App\Exceptions\ModelNotFoundException;
 use App\Http\Requests\BaseRequest;
-use App\Rules\Animal\Type\TypeAlreadyExistRule;
-use App\Rules\Animal\Type\TypeNotExistRule;
 
 class UpdateAnimalTypeRequest extends BaseRequest
 {
+    protected function prepareForValidation()
+    {
+        request()->merge([
+            'animalId' => request()->route('animalId'),
+        ]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -17,17 +21,9 @@ class UpdateAnimalTypeRequest extends BaseRequest
     public function rules()
     {
         return [
-            'oldTypeId' => ['required', 'gt:0', 'bail', 'exists:animal_types,id', new TypeNotExistRule()],
-            'newTypeId' => ['required', 'gt:0', 'bail', 'exists:animal_types,id', new TypeAlreadyExistRule()],
+            'animalId' => 'required|numeric|min:1',
+            'oldTypeId' => 'required|numeric|min:1',
+            'newTypeId' => 'required|numeric|min:1',
         ];
-    }
-
-    protected function afterValidation($validator)
-    {
-        if (isset($validator->failed()['oldTypeId']['Exists'])
-            || isset($validator->failed()['newTypeId']['Exists'])
-        ) {
-            throw new ModelNotFoundException();
-        }
     }
 }
