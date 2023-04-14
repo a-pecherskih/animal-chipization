@@ -8,42 +8,53 @@ use App\Http\Requests\Animal\VisitedLocation\DeleteVisitedLocationRequest;
 use App\Http\Requests\Animal\VisitedLocation\SearchVisitedLocationsRequest;
 use App\Http\Requests\Animal\VisitedLocation\UpdateVisitedLocationPointRequest;
 use App\Http\Resources\VisitedLocationResource;
-use App\Models\Animal;
-use App\Models\AnimalLocation;
-use App\Models\Location;
 use App\Services\Animal\VisitedLocationService;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
 
 class VisitedLocationController extends Controller
 {
-    public function search(Animal $animal, SearchVisitedLocationsRequest $request, VisitedLocationService $service)
-    {
-        $data = $request->validated();
+    private VisitedLocationService $service;
 
-        $accounts = $service->search($animal, $data);
+    /**
+     * VisitedLocationController constructor.
+     * @param \App\Services\Animal\VisitedLocationService $service
+     */
+    public function __construct(VisitedLocationService $service)
+    {
+        $this->service = $service;
+    }
+
+    public function search(int $animalId, SearchVisitedLocationsRequest $request)
+    {
+        $accounts = $this->service->search($animalId, $request->validated());
 
         return response()->json(VisitedLocationResource::collection($accounts), Response::HTTP_OK);
     }
 
-    public function create(Animal $animal, Location $location, AddVisitedLocationToAnimalRequest $request, VisitedLocationService $service)
+    public function create(int $animalId, int $pointId, AddVisitedLocationToAnimalRequest $request)
     {
-        $visitedLocation = $service->add($animal, $location);
+        Gate::check('add-visited-point-to-animal', [self::class]);
+
+        $visitedLocation = $this->service->addVisitedLocation($animalId, $pointId);
 
         return response()->json(new VisitedLocationResource($visitedLocation), Response::HTTP_CREATED);
     }
 
-    public function update(Animal $animal, UpdateVisitedLocationPointRequest $request, VisitedLocationService $service)
+    public function update(int $animalId, UpdateVisitedLocationPointRequest $request)
     {
-        $data = $request->validated();
+        Gate::check('update-visited-point-of-animal', [self::class]);
 
-        $visitedLocation = $service->update($data);
+        $visitedLocation = $this->service->updateVisitedLocation($animalId, $request->validated());
 
         return response()->json(new VisitedLocationResource($visitedLocation), Response::HTTP_OK);
     }
 
-    public function delete(Animal $animal, AnimalLocation $animalLocation, DeleteVisitedLocationRequest $request, VisitedLocationService $service)
+    public function delete(int $animalId, int $animalLocationId, DeleteVisitedLocationRequest $request)
     {
-        $service->delete($animal, $animalLocation);
+        Gate::check('delete-visited-point-from-animal', [self::class]);
+
+        $this->service->deleteVisitedLocation($animal, $animalLocation);
 
         return response()->json([], Response::HTTP_OK);
     }

@@ -25,4 +25,11 @@ class AnimalValidator
             throw new BadRequestException();
         }
     }
+
+    public function animalIsAliveOrFail(Animal $animal)
+    {
+        if ($animal->isDead()) {
+            throw new BadRequestException();
+        }
+    }
 }

@@ -74,4 +74,14 @@ class Animal extends Model
             'animal_type_id'
         );
     }
+
+    public function isAlive()
+    {
+        return $this->life_status == self::STATUS_ALIVE;
+    }
+
+    public function isDead()
+    {
+        return $this->life_status == self::STATUS_DEAD;
+    }
 }

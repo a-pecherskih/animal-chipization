@@ -2,12 +2,17 @@
 
 namespace App\Http\Requests\Animal\VisitedLocation;
 
-use App\Exceptions\ModelNotFoundException;
 use App\Http\Requests\BaseRequest;
-use App\Rules\Animal\VisitedLocation\CheckNewVisitedPoint;
 
 class UpdateVisitedLocationPointRequest extends BaseRequest
 {
+    protected function prepareForValidation()
+    {
+        request()->merge([
+            'animalId' => request()->route('animalId'),
+        ]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -16,17 +21,9 @@ class UpdateVisitedLocationPointRequest extends BaseRequest
     public function rules()
     {
         return [
-            'visitedLocationPointId' => ['required', 'bail', 'gt:0', 'exists:animal_locations,id,animal_id,' . $this->route('animal')->id],
-            'locationPointId' => ['required', 'bail', 'gt:0', 'exists:locations,id', new CheckNewVisitedPoint()],
+            'animalId' => 'required|numeric|min:1',
+            'visitedLocationPointId' => 'required|numeric|min:1',
+            'locationPointId' => 'required|numeric|min:1',
         ];
-    }
-
-    protected function afterValidation($validator)
-    {
-        if (isset($validator->failed()['visitedLocationPointId']['Exists'])
-            || isset($validator->failed()['locationPointId']['Exists'])
-        ) {
-            throw new ModelNotFoundException();
-        }
     }
 }

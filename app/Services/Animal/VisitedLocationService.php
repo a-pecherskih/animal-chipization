@@ -2,73 +2,83 @@
 
 namespace App\Services\Animal;
 
-use App\Models\Animal;
-use App\Models\AnimalLocation;
-use App\Models\Location;
-use App\Models\User;
-use Illuminate\Database\Eloquent\Builder;
+use App\Repositories\Animal\VisitedLocationRepository;
+use App\Repositories\AnimalRepository;
+use App\Repositories\LocationRepository;
+use App\Validators\Animal\VisitedLocationValidator;
+use App\Validators\AnimalValidator;
 
 class VisitedLocationService
 {
-    public function search(Animal $animal, array $data)
-    {
-        $startDateTime = $data['startDateTime'] ?? null;
-        $endDateTime = $data['endDateTime'] ?? null;
-        $from = $data['from'] ?? 0;
-        $size = $data['size'] ?? 10;
+    private AnimalRepository $animalRepository;
+    private LocationRepository $locationRepository;
+    private VisitedLocationRepository $visitedLocationRepository;
+    private AnimalValidator $animalValidator;
+    private VisitedLocationValidator $visitedLocationValidator;
 
-        return AnimalLocation::query()
-            ->where('animal_id', $animal->id)
-            ->when($startDateTime, function (Builder $q) use ($startDateTime) {
-                $q->where('date_time', '>=', $startDateTime);
-            })
-            ->when($endDateTime, function (Builder $q) use ($endDateTime) {
-                $q->where('date_time', '<=', $endDateTime);
-            })
-            ->offset($from)
-            ->limit($size)
-            ->orderBy('date_time')
-            ->get();
+    /**
+     * VisitedLocationService constructor.
+     * @param \App\Repositories\AnimalRepository $animalRepository
+     * @param \App\Repositories\LocationRepository $locationRepository
+     * @param \App\Repositories\Animal\VisitedLocationRepository $visitedLocationRepository
+     * @param \App\Validators\AnimalValidator $animalValidator
+     * @param \App\Validators\Animal\VisitedLocationValidator $visitedLocationValidator
+     */
+    public function __construct(
+        AnimalRepository $animalRepository,
+        LocationRepository $locationRepository,
+        VisitedLocationRepository $visitedLocationRepository,
+        AnimalValidator $animalValidator,
+        VisitedLocationValidator $visitedLocationValidator
+    )
+    {
+        $this->animalRepository = $animalRepository;
+        $this->locationRepository = $locationRepository;
+        $this->visitedLocationRepository = $visitedLocationRepository;
+        $this->animalValidator = $animalValidator;
+        $this->visitedLocationValidator = $visitedLocationValidator;
     }
 
-    public function add(Animal $animal, Location $location)
+    public function search(int $animalId, array $data)
     {
-        return AnimalLocation::query()
-            ->create([
-                'animal_id' => $animal->id,
-                'visited_location_id' => $location->id,
-                'date_time' => now()
-            ]);
+        $animal = $this->animalRepository->findByIdOrFail($animalId);
+
+        return $this->visitedLocationRepository->search($animal, $data);
     }
 
-    public function update(array $data)
+    public function addVisitedLocation(int $animalId, int $pointId)
     {
-        AnimalLocation::query()
-            ->where('id', $data['visitedLocationPointId'])
-            ->update([
-                'visited_location_id' => $data['locationPointId']
-            ]);
+        $animal = $this->animalRepository->findByIdOrFail($animalId, ['visitedLocations']);
+        $location = $this->locationRepository->findByIdOrFail($pointId);
 
-        return AnimalLocation::query()->find($data['visitedLocationPointId']);
+        $this->animalValidator->animalIsAliveOrFail($animal);
+        $this->visitedLocationValidator->pointIsChippingLocation($animal, $location);
+        $this->visitedLocationValidator->animalIsNotAlreadyInThisPointOrFail($animal, $location);
+
+        return $this->visitedLocationRepository->addVisitedLocationToAnimal($animal, $location);
     }
 
-    public function delete(Animal $animal, AnimalLocation $animalLocation)
+    public function updateVisitedLocation(int $animalId, array $data)
     {
-        $detachPointsIds = [$animalLocation->id];
+        $animal = $this->animalRepository->findByIdOrFail($animalId, ['visitedLocations']);
+        $visitedPoint = $this->visitedLocationRepository->findByIdOrFail($data['visitedLocationPointId']);
+        $newPoint = $this->locationRepository->findByIdOrFail($data['locationPointId']);
 
-        /**
-         * Если удаляется первая посещенная точка локации,
-         * а вторая точка совпадает с точкой чипирования, то она удаляется автоматически
-         */
-        if (count($animal->visitedLocations) > 2 && $animal->visitedLocations[0]->pivot->id == $animalLocation->id) {
-            if ($animal->visitedLocations[1]->id == $animal->chipping_location_id) {
-                $detachPointsIds[] = $animal->visitedLocations[1]->pivot->id;
-            }
-        }
+        $this->visitedLocationValidator->animalHasVisitedPointOrFail($animal, $visitedPoint);
+        $this->visitedLocationValidator->pointIsNotSameOrFail($visitedPoint, $newPoint);
+        $this->visitedLocationValidator->pointIsFirstAndNotChippingOrFail($animal, $visitedPoint, $newPoint);
+        $this->visitedLocationValidator->pointIsNotPrevOrNextOrFail($animal, $visitedPoint, $newPoint);
 
-        AnimalLocation::query()
-            ->where('animal_id', $animal->id)
-            ->whereIn('id', $detachPointsIds)
-            ->delete();
+        return $this->visitedLocationRepository->updateVisitedLocationOfAnimal($visitedPoint, $newPoint);
+    }
+
+    public function deleteVisitedLocation(int $animalId, int $visitedPointId)
+    {
+        $animal = $this->animalRepository->findByIdOrFail($animalId, ['visitedLocations']);
+        $visitedPoint = $this->visitedLocationRepository->findByIdOrFail($visitedPointId);
+
+        $this->visitedLocationValidator->animalHasVisitedPointOrFail($animal, $visitedPoint);
+
+        $this->visitedLocationRepository->deleteVisitedPoint($animal, $visitedPoint);
     }
 }
