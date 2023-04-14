@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\AnimalType;
 
-use App\Http\Requests\BaseRequest;
+use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateAnimalTypeRequest extends BaseRequest
+class UpdateAnimalTypeRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.

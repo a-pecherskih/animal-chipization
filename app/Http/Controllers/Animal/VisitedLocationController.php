@@ -54,7 +54,7 @@ class VisitedLocationController extends Controller
     {
         Gate::check('delete-visited-point-from-animal', [self::class]);
 
-        $this->service->deleteVisitedLocation($animal, $animalLocation);
+        $this->service->deleteVisitedLocation($animalId, $animalLocationId);
 
         return response()->json([], Response::HTTP_OK);
     }

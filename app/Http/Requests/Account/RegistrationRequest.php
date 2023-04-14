@@ -3,9 +3,9 @@
 namespace App\Http\Requests\Account;
 
 use App\Exceptions\ModelFieldExistsException;
-use App\Http\Requests\BaseRequest;
+use Illuminate\Foundation\Http\FormRequest;
 
-class RegistrationRequest extends BaseRequest
+class RegistrationRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.

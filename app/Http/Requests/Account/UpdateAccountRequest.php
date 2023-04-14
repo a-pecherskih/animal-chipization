@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests\Account;
 
-use App\Http\Requests\BaseRequest;
+use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Role;
 
-class UpdateAccountRequest extends BaseRequest
+class UpdateAccountRequest extends FormRequest
 {
     protected function prepareForValidation()
     {

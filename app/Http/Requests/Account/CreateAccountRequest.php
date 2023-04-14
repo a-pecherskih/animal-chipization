@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests\Account;
 
-use App\Http\Requests\BaseRequest;
 use App\Models\Role;
+use Illuminate\Foundation\Http\FormRequest;
 
-class CreateAccountRequest extends BaseRequest
+class CreateAccountRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.

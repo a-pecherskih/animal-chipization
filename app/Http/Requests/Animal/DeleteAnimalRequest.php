@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Animal;
 
-use App\Http\Requests\BaseRequest;
+use Illuminate\Foundation\Http\FormRequest;
 
-class DeleteAnimalRequest extends BaseRequest
+class DeleteAnimalRequest extends FormRequest
 {
     protected function prepareForValidation()
     {

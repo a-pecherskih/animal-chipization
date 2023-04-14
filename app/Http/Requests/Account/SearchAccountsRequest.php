@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Account;
 
-use App\Http\Requests\BaseRequest;
+use Illuminate\Foundation\Http\FormRequest;
 
-class SearchAccountsRequest extends BaseRequest
+class SearchAccountsRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.

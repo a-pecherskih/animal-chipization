@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests\Animal;
 
-use App\Http\Requests\BaseRequest;
+use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Animal;
 
-class UpdateAnimalRequest extends BaseRequest
+class UpdateAnimalRequest extends FormRequest
 {
     protected function prepareForValidation()
     {

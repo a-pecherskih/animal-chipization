@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Area;
 
-use App\Http\Requests\BaseRequest;
+use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateAreaRequest extends BaseRequest
+class UpdateAreaRequest extends FormRequest
 {
     protected function prepareForValidation()
     {

@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Location;
 
-use App\Http\Requests\BaseRequest;
+use Illuminate\Foundation\Http\FormRequest;
 
-class DeleteLocationRequest extends BaseRequest
+class DeleteLocationRequest extends FormRequest
 {
     protected function prepareForValidation()
     {

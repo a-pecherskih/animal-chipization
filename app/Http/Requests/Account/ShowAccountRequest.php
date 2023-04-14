@@ -2,10 +2,9 @@
 
 namespace App\Http\Requests\Account;
 
-use App\Exceptions\ModelFieldExistsException;
-use App\Http\Requests\BaseRequest;
+use Illuminate\Foundation\Http\FormRequest;
 
-class ShowAccountRequest extends BaseRequest
+class ShowAccountRequest extends FormRequest
 {
     protected function prepareForValidation()
     {
