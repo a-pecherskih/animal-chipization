@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Area;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\BaseRequest;
 
-class DeleteAreaRequest extends FormRequest
+class DeleteAreaRequest extends BaseRequest
 {
     protected function prepareForValidation()
     {

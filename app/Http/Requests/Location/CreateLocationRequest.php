@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Location;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\BaseRequest;
 
-class CreateLocationRequest extends FormRequest
+class CreateLocationRequest extends BaseRequest
 {
     /**
      * Get the validation rules that apply to the request.

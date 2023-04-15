@@ -4,10 +4,10 @@ namespace App\Http\Requests\Animal;
 
 use App\Exceptions\ModelFieldExistsException;
 use App\Exceptions\ModelNotFoundException;
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\BaseRequest;
 use App\Models\Animal;
 
-class CreateAnimalRequest extends FormRequest
+class CreateAnimalRequest extends BaseRequest
 {
     /**
      * Get the validation rules that apply to the request.

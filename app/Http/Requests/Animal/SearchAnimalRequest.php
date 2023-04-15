@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests\Animal;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\BaseRequest;
 use App\Models\Animal;
 
-class SearchAnimalRequest extends FormRequest
+class SearchAnimalRequest extends BaseRequest
 {
     /**
      * Get the validation rules that apply to the request.

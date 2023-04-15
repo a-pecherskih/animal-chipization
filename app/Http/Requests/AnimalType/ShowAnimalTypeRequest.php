@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\AnimalType;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\BaseRequest;
 
-class ShowAnimalTypeRequest extends FormRequest
+class ShowAnimalTypeRequest extends BaseRequest
 {
     protected function prepareForValidation()
     {

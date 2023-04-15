@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Animal\VisitedLocation;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\BaseRequest;
 
-class AddVisitedLocationToAnimalRequest extends FormRequest
+class AddVisitedLocationToAnimalRequest extends BaseRequest
 {
     protected function prepareForValidation()
     {

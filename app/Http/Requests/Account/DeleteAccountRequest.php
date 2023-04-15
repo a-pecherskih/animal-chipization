@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Account;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\BaseRequest;
 
-class DeleteAccountRequest extends FormRequest
+class DeleteAccountRequest extends BaseRequest
 {
     protected function prepareForValidation()
     {

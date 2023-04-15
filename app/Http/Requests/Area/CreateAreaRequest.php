@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Area;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\BaseRequest;
 
-class CreateAreaRequest extends FormRequest
+class CreateAreaRequest extends BaseRequest
 {
     /**
      * Get the validation rules that apply to the request.

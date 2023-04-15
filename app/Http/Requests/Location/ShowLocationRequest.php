@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Location;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\BaseRequest;
 
-class ShowLocationRequest extends FormRequest
+class ShowLocationRequest extends BaseRequest
 {
     protected function prepareForValidation()
     {
