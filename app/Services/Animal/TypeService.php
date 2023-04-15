@@ -50,8 +50,7 @@ class TypeService
         $newAnimalType = $this->animalTypeRepository->findByIdOrFail($data['newTypeId']);
 
         $this->typeValidator->checkAnimalHasTypeOrFail($animal, $oldAnimalType);
-        $this->typeValidator->checkAnimalAlreadyHasTypeOrFail($animal, $oldAnimalType);
-        $this->typeValidator->checkAnimalAlreadyHasTypeOrFail($animal, $newAnimalType);
+        $this->typeValidator->animalDoestHaveNewTypeOrFail($animal, $newAnimalType);
 
         return $this->typeRepository->updateTypeOfAnimal($animal, $oldAnimalType, $newAnimalType);
     }

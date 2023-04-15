@@ -20,11 +20,14 @@ class TypeValidator
         return true;
     }
 
-    public function checkAnimalAlreadyHasTypeOrFail(Animal $animal, AnimalType $animalType)
+    /**
+     * Животное с animalId уже имеет типы с oldTypeId и newTypeId
+     */
+    public function animalDoestHaveNewTypeOrFail(Animal $animal, AnimalType $newType)
     {
-        $existType = $animal->types->firstWhere('id', $animalType->id);
+        $existNewType = $animal->types->firstWhere('id', $newType->id);
 
-        if (!blank($existType)) {
+        if ($existNewType) {
             throw new ModelFieldExistsException();
         }
 
