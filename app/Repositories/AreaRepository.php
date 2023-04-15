@@ -16,6 +16,20 @@ class AreaRepository
         return Area::query()->find($id);
     }
 
+    public function findByName(string $name): ?Area
+    {
+        return Area::query()->firstWhere('name', $name);
+    }
+
+    public function getOtherAreas($excludeId = null)
+    {
+        return Area::query()
+            ->when(!blank($excludeId), function ($q) use ($excludeId) {
+                $q->where('id', '!=', $excludeId);
+            })
+            ->get();
+    }
+
     public function create(array $data): Area
     {
         return Area::query()->create([

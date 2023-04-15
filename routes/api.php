@@ -85,4 +85,16 @@ Route::group(['middleware' => ['auth.basic']], function () {
             Route::delete('/{pointId}', 'delete');
         });
     });
+
+    Route::group([
+        'prefix' => 'areas',
+        'as' => 'area.',
+        'controller' => \App\Http\Controllers\AreaController::class
+    ], function () {
+        Route::get('/search', 'search')->name('search');
+        Route::post('/', 'create')->name('create');
+        Route::get('/{id}', 'show')->name('show');
+        Route::put('/{id}', 'update')->name('update');
+        Route::delete('/{id}', 'delete')->name('delete');
+    });
 });

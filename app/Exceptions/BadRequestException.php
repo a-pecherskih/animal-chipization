@@ -9,6 +9,6 @@ class BadRequestException extends Exception
 {
     public function render($request)
     {
-        return response()->json([], Response::HTTP_BAD_REQUEST);
+        return response()->json(['error' => $this->message ?? 'Bad request'], Response::HTTP_BAD_REQUEST);
     }
 }

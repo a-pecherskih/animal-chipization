@@ -48,9 +48,7 @@ class AreaController extends Controller
     {
         Gate::check('update-area', [self::class]);
 
-        $area = $this->repository->findById($id);
-
-        $area = $this->service->update($area, $request->validated());
+        $area = $this->service->update($id, $request->validated());
 
         return response()->json(new AreaResource($area), Response::HTTP_OK);
     }
@@ -59,9 +57,7 @@ class AreaController extends Controller
     {
         Gate::check('delete-area', [self::class]);
 
-        $area = $this->repository->findByIdOrFail($id);
-
-        $this->service->delete($area);
+        $this->service->delete($id);
 
         return response()->json([], Response::HTTP_OK);
     }
