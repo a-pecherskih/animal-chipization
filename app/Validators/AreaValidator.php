@@ -5,24 +5,29 @@ namespace App\Validators;
 use App\Exceptions\BadRequestException;
 use App\Exceptions\ModelFieldExistsException;
 use App\Repositories\AreaRepository;
-use Location\Distance\Vincenty;
+use App\Services\GeometryService;
 use Location\Intersection\Intersection;
-use Location\Line;
 use Location\Polygon;
 
 class AreaValidator
 {
     private AreaRepository $repository;
+    private GeometryService $geometryService;
 
     /**
      * AreaValidator constructor.
      * @param \App\Repositories\AreaRepository $repository
+     * @param \App\Services\GeometryService $geometryService
      */
-    public function __construct(AreaRepository $repository)
+    public function __construct(AreaRepository $repository, GeometryService $geometryService)
     {
         $this->repository = $repository;
+        $this->geometryService = $geometryService;
     }
 
+    /**
+     * Зона с таким name уже существует
+     */
     public function areaNotExistSameNameOrFail($area, string $name)
     {
         $areaDB = $this->repository->findByName($name);
@@ -37,57 +42,34 @@ class AreaValidator
      */
     public function inNotLineOrFail(array $geoPoints)
     {
-        $calculator = new Vincenty();
-
-        $fullLine = new Line($geoPoints[0], last($geoPoints));
-        $dist = $fullLine->getLength($calculator);
-
-        $sumDist = 0;
-
-        foreach ($geoPoints as $key => $point) {
-            if (isset($geoPoints[$key + 1])) {
-                $segmentLine = new Line($point, $geoPoints[$key + 1]);
-                $sumDist += $segmentLine->getLength($calculator);
-//                $isLine = $isLine || $intersection->intersects($fullLine, $segmentLine);
-//                $isLine = $isLine || ($fullLine->intersectsLine($segmentLine));
-            }
-        }
-
-        if (round($dist) == round($sumDist)) {
+        if ($this->geometryService->isLine($geoPoints)) {
             throw new BadRequestException('area is line');
         }
     }
 
     /**
      * Границы новой зоны пересекаются между собой
+     *  (ищем пересечение границ через одну)
      */
     public function borderNotCrossEachOtherOrFail(array $lines)
     {
         $chunks = collect($lines)->chunk(2);
 
-        $prevBorder = null;
+        /** @var array $bordersPart1 */
+        $bordersPart1 = $chunks->map(function ($chunk) {
+            return $chunk->first();
+        })->toArray();
 
-        foreach ($chunks as $chunk) {
-            $border = $chunk->first();
+        /** @var array $borders */
+        $bordersPart2 = $chunks->map(function ($chunk) {
+            return (count($chunk) == 1) ? null : $chunk->last();
+        })->filter()->toArray();
 
-            if (blank($prevBorder)) {
-                $prevBorder =  $border;
-            } else {
-                $isIntersect = ($prevBorder->intersectsLine($border));
-
-                if ($isIntersect && (count($chunk) > 1)) {
-                    throw new BadRequestException('area borders cross each other');
-                }
-            }
+        if ($this->geometryService->bordersCrossedEachOther($bordersPart1)
+            || $this->geometryService->bordersCrossedEachOther($bordersPart2)
+        ) {
+            throw new BadRequestException('area borders cross each other');
         }
-    }
-
-    /**
-     * Границы новой зоны пересекают границы уже существующей зоны
-     */
-    public function borderNotCrossOtherAreaOrFail(array $pointsCurrent, array $pointsOther)
-    {
-
     }
 
     /**
@@ -97,12 +79,11 @@ class AreaValidator
     {
         $intersection = new Intersection();
 
-//        if ($polygonCurrent->containsGeometry($polygonOther) || $polygonOther->containsGeometry($polygonCurrent)) {
-//            throw new BadRequestException('area inside other area');
-//        }
-
         if ($intersection->intersects($polygonCurrent, $polygonOther) || $intersection->intersects($polygonOther, $polygonCurrent)) {
-            throw new BadRequestException('area inside other area');
+
+            if ($this->geometryService->areasHaveCrossBordersNotCommon($polygonCurrent, $polygonOther)) {
+                throw new BadRequestException('area inside other area');
+            }
         }
     }
 

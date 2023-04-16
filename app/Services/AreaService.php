@@ -29,9 +29,9 @@ class AreaService
         $points = $this->geometryService->getPoints($data['areaPoints']);
         $polygon = $this->geometryService->getPolygonFromGeoPoints($points);
 
+        $this->validator->areaDoesntHaveDuplicatePointsOrFail($data['areaPoints']);
         $this->validator->inNotLineOrFail($points);
         $this->validator->borderNotCrossEachOtherOrFail($polygon->getSegments());
-        $this->validator->areaDoesntHaveDuplicatePointsOrFail($data['areaPoints']);
 
         $otherAreas = $this->repository->getOtherAreas();
 
@@ -55,9 +55,9 @@ class AreaService
         $points = $this->geometryService->getPoints($data['areaPoints']);
         $polygon = $this->geometryService->getPolygonFromGeoPoints($points);
 
+        $this->validator->areaDoesntHaveDuplicatePointsOrFail($data['areaPoints']);
         $this->validator->inNotLineOrFail($points);
         $this->validator->borderNotCrossEachOtherOrFail($polygon->getSegments());
-        $this->validator->areaDoesntHaveDuplicatePointsOrFail($data['areaPoints']);
 
         $otherAreas = $this->repository->getOtherAreas($area->id);
 
