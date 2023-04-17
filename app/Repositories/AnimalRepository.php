@@ -17,6 +17,15 @@ class AnimalRepository
             ->findOrFail($id);
     }
 
+    public function all($with = []): Collection
+    {
+        return Animal::query()
+            ->when(!empty($with), function ($q) use ($with) {
+                $q->with($with);
+            })
+            ->get();
+    }
+
     public function search(array $filters): Collection
     {
         $startDateTime = $filters['startDateTime'] ?? null;

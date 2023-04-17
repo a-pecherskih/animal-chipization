@@ -92,6 +92,7 @@ Route::group(['middleware' => ['auth.basic']], function () {
         'controller' => \App\Http\Controllers\AreaController::class
     ], function () {
         Route::get('/search', 'search')->name('search');
+        Route::get('/{areaId}/analytics', [\App\Http\Controllers\Area\AnalyticController::class, 'analyze'])->name('analyze');
         Route::post('/', 'create')->name('create');
         Route::get('/{id}', 'show')->name('show');
         Route::put('/{id}', 'update')->name('update');
