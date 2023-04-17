@@ -7,7 +7,6 @@ use App\Http\Requests\AnimalType\DeleteAnimalTypeRequest;
 use App\Http\Requests\AnimalType\ShowAnimalTypeRequest;
 use App\Http\Requests\AnimalType\UpdateAnimalTypeRequest;
 use App\Http\Resources\AnimalTypeResource;
-use App\Repositories\AnimalTypeRepository;
 use App\Services\AnimalTypeService;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,22 +14,19 @@ use Symfony\Component\HttpFoundation\Response;
 class AnimalTypeController extends Controller
 {
     private AnimalTypeService $service;
-    private AnimalTypeRepository $repository;
 
     /**
      * AnimalTypeController constructor.
      * @param \App\Services\AnimalTypeService $service
-     * @param \App\Repositories\AnimalTypeRepository $repository
      */
-    public function __construct(AnimalTypeService $service, AnimalTypeRepository $repository)
+    public function __construct(AnimalTypeService $service)
     {
         $this->service = $service;
-        $this->repository = $repository;
     }
 
     public function show(int $id, ShowAnimalTypeRequest $request)
     {
-        $animalType = $this->repository->findByIdOrFail($id);
+        $animalType = $this->service->show($id);
 
         return response()->json(new AnimalTypeResource($animalType), Response::HTTP_OK);
     }
@@ -48,9 +44,7 @@ class AnimalTypeController extends Controller
     {
         Gate::check('update-animal-type', [self::class]);
 
-        $animalType = $this->repository->findByIdOrFail($id);
-
-        $animalType = $this->service->update($animalType, $request->validated());
+        $animalType = $this->service->update($id, $request->validated());
 
         return response()->json(new AnimalTypeResource($animalType), Response::HTTP_OK);
     }
@@ -59,9 +53,7 @@ class AnimalTypeController extends Controller
     {
         Gate::check('delete-animal-type', [self::class]);
 
-        $animalType = $this->repository->findByIdOrFail($id, ['animals']);
-
-        $this->service->delete($animalType);
+        $this->service->delete($id);
 
         return response()->json([], Response::HTTP_OK);
     }

@@ -14,8 +14,8 @@ class GeohashLocationRequest extends BaseRequest
     public function rules()
     {
         return [
-            'latitude' => 'numeric|between:-90,90',
-            'longitude' => 'numeric|between:-180,180',
+            'latitude' => 'required|numeric|between:-90,90',
+            'longitude' => 'required|numeric|between:-180,180',
         ];
     }
 }

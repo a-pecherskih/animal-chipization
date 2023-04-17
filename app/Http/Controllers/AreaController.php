@@ -7,7 +7,6 @@ use App\Http\Requests\Area\DeleteAreaRequest;
 use App\Http\Requests\Area\ShowAreaRequest;
 use App\Http\Requests\Area\UpdateAreaRequest;
 use App\Http\Resources\AreaResource;
-use App\Repositories\AreaRepository;
 use App\Services\AreaService;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,22 +14,19 @@ use Symfony\Component\HttpFoundation\Response;
 class AreaController extends Controller
 {
     private AreaService $service;
-    private AreaRepository $repository;
 
     /**
      * AreaController constructor.
      * @param \App\Services\AreaService $service
-     * @param \App\Repositories\AreaRepository $repository
      */
-    public function __construct(AreaService $service, AreaRepository $repository)
+    public function __construct(AreaService $service)
     {
         $this->service = $service;
-        $this->repository = $repository;
     }
 
     public function show(int $id, ShowAreaRequest $request)
     {
-        $area = $this->repository->findByIdOrFail($id);
+        $area = $this->service->show($id);
 
         return response()->json(new AreaResource($area), Response::HTTP_OK);
     }

@@ -24,6 +24,11 @@ class AreaService
         $this->geometryService = $geometryService;
     }
 
+    public function show(int $areaId)
+    {
+        return $this->repository->findByIdOrFail($areaId);
+    }
+
     public function create(array $data)
     {
         $points = $this->geometryService->getPoints($data['areaPoints']);

@@ -76,6 +76,6 @@ class AccountService
     {
        $this->validator->checkNotAnimalsOrFail($user);
 
-        $user->delete();
+       $this->repository->delete($user);
     }
 }

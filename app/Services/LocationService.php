@@ -2,12 +2,10 @@
 
 namespace App\Services;
 
-use App\Exceptions\ModelNotFoundException;
 use App\Models\Location;
 use App\Packages\Geometry\GeoHash;
 use App\Repositories\LocationRepository;
 use App\Validators\LocationValidator;
-use Illuminate\Database\Eloquent\Collection;
 
 class LocationService
 {
@@ -25,15 +23,12 @@ class LocationService
         $this->validator = $validator;
     }
 
-    public function search(array $data): Collection
+    /**
+     * @throws \App\Exceptions\ModelFieldExistsException
+     */
+    public function show(int $locationId)
     {
-        $locations = $this->repository->search($data);
-
-        if (blank($locations)) {
-            throw new ModelNotFoundException();
-        }
-
-        return $locations;
+        return $this->repository->findByIdOrFail($locationId);
     }
 
     /**
@@ -50,8 +45,10 @@ class LocationService
      * @throws \App\Exceptions\ModelFieldExistsException
      * @throws \App\Exceptions\BadRequestException
      */
-    public function update(Location $location, array $data)
+    public function update(int $id, array $data)
     {
+        $location = $this->repository->findByIdOrFail($id);
+
         $this->validator->checkNotExistLocationWithPointOrFail($data['latitude'], $data['longitude'], $location);
         $this->validator->checkLocationIsNotVisitedOrChippingPointOrFail($location);
 
@@ -70,8 +67,15 @@ class LocationService
         $this->repository->delete($location);
     }
 
+    public function findByCoordinates(array $data): Location
+    {
+        return $this->repository->findByLatAndLonOrFail($data['latitude'],$data['longitude']);
+    }
+
     public function geohash(array $data): string
     {
+        $location = $this->repository->findByLatAndLonOrFail($data['latitude'],$data['longitude']);
+
         $g = new Geohash();
         return $g->encode($data['latitude'], $data['longitude'], 12);
     }
@@ -84,6 +88,6 @@ class LocationService
 
     public function geohashV3(array $data): string
     {
-        return base64_encode($data['longitude'] .':'. $data['latitude']);
+        return '';
     }
 }

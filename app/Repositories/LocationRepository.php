@@ -26,6 +26,16 @@ class LocationRepository
             ]);
     }
 
+    public function findByLatAndLonOrFail($latitude, $longitude): ?Location
+    {
+        return Location::query()
+            ->where([
+                'latitude' => $latitude,
+                'longitude' => $longitude,
+            ])
+            ->firstOrFail();
+    }
+
     public function create($data): Location
     {
         return Location::query()->create([

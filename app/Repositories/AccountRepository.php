@@ -83,4 +83,9 @@ class AccountRepository
             ->with('role')
             ->get();
     }
+
+    public function delete(User $user): void
+    {
+        $user->delete();
+    }
 }
