@@ -2,9 +2,12 @@
 
 namespace App\Services;
 
+use App\Exceptions\ModelNotFoundException;
 use App\Models\Location;
+use App\Packages\Geometry\GeoHash;
 use App\Repositories\LocationRepository;
 use App\Validators\LocationValidator;
+use Illuminate\Database\Eloquent\Collection;
 
 class LocationService
 {
@@ -20,6 +23,17 @@ class LocationService
     {
         $this->repository = $repository;
         $this->validator = $validator;
+    }
+
+    public function search(array $data): Collection
+    {
+        $locations = $this->repository->search($data);
+
+        if (blank($locations)) {
+            throw new ModelNotFoundException();
+        }
+
+        return $locations;
     }
 
     /**
@@ -54,5 +68,22 @@ class LocationService
         $this->validator->checkLocationIsNotVisitedOrChippingPointOrFail($location);
 
         $this->repository->delete($location);
+    }
+
+    public function geohash(array $data): string
+    {
+        $g = new Geohash();
+        return $g->encode($data['latitude'], $data['longitude'], 12);
+    }
+
+    public function geohashV2(array $data): string
+    {
+        $geoHash = $this->geohash($data);
+        return base64_encode($geoHash);
+    }
+
+    public function geohashV3(array $data): string
+    {
+        return base64_encode($data['longitude'] .':'. $data['latitude']);
     }
 }

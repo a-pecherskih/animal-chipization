@@ -35,6 +35,10 @@ Route::group(['middleware' => ['auth.basic']], function () {
         'controller' => \App\Http\Controllers\LocationController::class
     ], function () {
 
+        Route::get('/', 'search')->name('search');
+        Route::get('/geohash', 'geohash')->name('geohash');
+        Route::get('/geohashv2', 'geohashV2')->name('geohashv2');
+        Route::get('/geohashv3', 'geohashV3')->name('geohashv3');
         Route::get('/{id}', 'show')->name('show');
         Route::post('/', 'create');
         Route::put('/{id}', 'update');

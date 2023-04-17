@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Location\DeleteLocationRequest;
 use App\Http\Requests\Location\CreateLocationRequest;
+use App\Http\Requests\Location\GeohashLocationRequest;
+use App\Http\Requests\Location\SearchLocationRequest;
 use App\Http\Requests\Location\UpdateLocationRequest;
 use App\Http\Resources\LocationResource;
 use App\Repositories\LocationRepository;
@@ -61,5 +63,26 @@ class LocationController extends Controller
         $this->service->delete($id);
 
         return response()->json([], Response::HTTP_OK);
+    }
+
+    public function search(SearchLocationRequest $request)
+    {
+        $locations = $this->service->search($request->validated());
+        return '';
+    }
+
+    public function geohash(GeohashLocationRequest $request)
+    {
+        return $this->service->geohash($request->validated());
+    }
+
+    public function geohashV2(GeohashLocationRequest $request)
+    {
+        return $this->service->geohashV2($request->validated());
+    }
+
+    public function geohashV3(GeohashLocationRequest $request)
+    {
+        return $this->service->geohashV3($request->validated());
     }
 }
