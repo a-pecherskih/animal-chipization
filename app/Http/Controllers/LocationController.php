@@ -6,6 +6,7 @@ use App\Http\Requests\Location\DeleteLocationRequest;
 use App\Http\Requests\Location\CreateLocationRequest;
 use App\Http\Requests\Location\GeohashLocationRequest;
 use App\Http\Requests\Location\SearchLocationRequest;
+use App\Http\Requests\Location\ShowLocationRequest;
 use App\Http\Requests\Location\UpdateLocationRequest;
 use App\Http\Resources\LocationResource;
 use App\Repositories\LocationRepository;
@@ -29,7 +30,7 @@ class LocationController extends Controller
         $this->repository = $repository;
     }
 
-    public function show(int $id)
+    public function show(int $id, ShowLocationRequest $request)
     {
         $location = $this->repository->findByIdOrFail($id);
 
@@ -68,7 +69,7 @@ class LocationController extends Controller
     public function search(SearchLocationRequest $request)
     {
         $locations = $this->service->search($request->validated());
-        return '';
+        return json_encode(1);
     }
 
     public function geohash(GeohashLocationRequest $request)
