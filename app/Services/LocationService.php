@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Helpers\Hash;
 use App\Models\Location;
+use App\Packages\Geometry\Geometry;
 use App\Repositories\LocationRepository;
 use App\Validators\LocationValidator;
 
@@ -11,17 +12,21 @@ class LocationService
 {
     private LocationRepository $repository;
     private LocationValidator $validator;
+    private Geometry $geometry;
 
     /**
      * LocationService constructor.
      * @param \App\Repositories\LocationRepository $repository
      * @param \App\Validators\LocationValidator $validator
+     * @param \App\Packages\Geometry\Geometry $geometry
      */
-    public function __construct(LocationRepository $repository, LocationValidator $validator)
+    public function __construct(LocationRepository $repository, LocationValidator $validator, Geometry $geometry)
     {
         $this->repository = $repository;
         $this->validator = $validator;
+        $this->geometry = $geometry;
     }
+
 
     /**
      * @throws \App\Exceptions\ModelFieldExistsException

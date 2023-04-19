@@ -188,12 +188,14 @@ class GeoGeometry implements Geometry
 
     public function polygonsHaveCrossBordersNotCommon(GeoPolygon|Polygon $polygon1, GeoPolygon|Polygon $polygon2): bool
     {
+        /** @var \App\Packages\Geometry\Geo\GeoLine[] $lines1 */
         $lines1 = $polygon1->getBorders();
+        /** @var \App\Packages\Geometry\Geo\GeoLine[] $lines2 */
         $lines2 = $polygon2->getBorders();
 
         foreach ($lines1 as $line1) {
             foreach ($lines2 as $line2) {
-                if ($line1->intersectsLine($line2)) {
+                if ($line1->getLine()->intersectsLine($line2->getLine())) {
                     //Линии пересекаются, но не совпадают
                     if (!$this->linesHaveSamePointsStartAndEnd($line1, $line2) && !$this->linesHaveCommonStartOrEndPoint($line1, $line2)) {
                         return true;
@@ -232,6 +234,7 @@ class GeoGeometry implements Geometry
 
     public function polygonLinesCrossedEachOther(GeoPolygon|Polygon $polygon): bool
     {
+        /** @var \App\Packages\Geometry\Geo\GeoLine[] $lines */
         $lines = $polygon->getBorders();
         $chunks = collect($lines)->chunk(2);
 

@@ -61,8 +61,8 @@ class LocationController extends Controller
 
     public function search(GeohashLocationRequest $request)
     {
-        $locations = $this->service->findByCoordinates($request->validated());
-        return json_encode(1);
+        $location = $this->service->findByCoordinates($request->validated());
+        return $location->id;
     }
 
     public function geohash(GeohashLocationRequest $request)
