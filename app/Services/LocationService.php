@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
+use App\Helpers\Hash;
 use App\Models\Location;
-use App\Packages\Geometry\GeoHash;
 use App\Repositories\LocationRepository;
 use App\Validators\LocationValidator;
 
@@ -76,14 +76,12 @@ class LocationService
     {
         $location = $this->repository->findByLatAndLonOrFail($data['latitude'],$data['longitude']);
 
-        $g = new Geohash();
-        return $g->encode($data['latitude'], $data['longitude'], 12);
+        return Hash::getGeohash($data['latitude'], $data['longitude']);
     }
 
     public function geohashV2(array $data): string
     {
-        $geoHash = $this->geohash($data);
-        return base64_encode($geoHash);
+        return Hash::getBase64($this->geohash($data));
     }
 
     public function geohashV3(array $data): string

@@ -3,20 +3,17 @@
 namespace App\Services\Area;
 
 use App\Models\Animal;
+use App\Packages\Geometry\Geometry;
+use App\Packages\Geometry\Polygon;
 use App\Repositories\AnimalRepository;
 use App\Repositories\AreaRepository;
-use App\Services\GeometryService;
 use Carbon\Carbon;
-use Location\Coordinate;
-use Location\Intersection\Intersection;
-use Location\Line;
-use Location\Polygon;
 
 class AnalyticService
 {
     private AreaRepository $areaRepository;
     private AnimalRepository $animalRepository;
-    private GeometryService $geometryService;
+    private Geometry $geometryService;
     private Carbon $startDate;
     private Carbon $endDate;
 
@@ -24,9 +21,9 @@ class AnalyticService
      * AnalyticService constructor.
      * @param \App\Repositories\AreaRepository $areaRepository
      * @param \App\Repositories\AnimalRepository $animalRepository
-     * @param \App\Services\GeometryService $geometryService
+     * @param \App\Packages\Geometry\Geometry $geometryService
      */
-    public function __construct(AreaRepository $areaRepository, AnimalRepository $animalRepository, GeometryService $geometryService)
+    public function __construct(AreaRepository $areaRepository, AnimalRepository $animalRepository, Geometry $geometryService)
     {
         $this->areaRepository = $areaRepository;
         $this->animalRepository = $animalRepository;
@@ -40,11 +37,10 @@ class AnalyticService
         $this->startDate = isset($filters['startDate']) ? Carbon::parse($filters['startDate']) : now()->subYears(100);
         $this->endDate = isset($filters['endDate']) ? Carbon::parse($filters['endDate']) : now();
 
-        $points = $this->geometryService->getPoints($area->points);
-        $polygon = $this->geometryService->getPolygonFromGeoPoints($points);
+        $points = $this->geometryService->getPointsFromCoordinates($area->points);
+        $polygon = $this->geometryService->getPolygonFromPoints($points);
 
         $quantityByType = [];
-
 
         $totalAnimals = [];
         $totalAnimalsArrived = [];
@@ -127,38 +123,6 @@ class AnalyticService
         return ($visitedLocations->isEmpty() || ($visitedLocations->last()->id == $chippingLocation->id));
     }
 
-    private function pointInBorder(Line $border, Coordinate $point)
-    {
-        $points = [
-            $border->getPoint1(),
-            $point,
-            $border->getPoint2()
-        ];
-
-        if ($this->geometryService->isLine($points)) {
-            return true;
-        }
-    }
-
-    private function pointInBorders(array $borders, Coordinate $point)
-    {
-        foreach ($borders as $border) {
-            $pointInBorder = $this->pointInBorder($border, $point);
-
-            if ($pointInBorder) return true;
-        }
-
-        return false;
-    }
-
-    private function polygonHasPoint(Polygon $polygon, Coordinate $coordinate)
-    {
-        $intersection = new Intersection();
-        $inArea = $intersection->intersects($coordinate, $polygon, false);
-
-        return $inArea || $this->pointInBorders($polygon->getSegments(), $coordinate);
-    }
-
     /**
      * Животное в зоне в указанный интервал времени
      * (Животное было чипировано в зоне и осталось в зоне)
@@ -167,9 +131,11 @@ class AnalyticService
     private function animalInArea(Animal $animal, Polygon $polygon)
     {
         $chippingLocation = $animal->chippingLocation;
-        $geoPointChippingLocation = new Coordinate($chippingLocation->latitude, $chippingLocation->longitude);
+        $pointChippingLocation = $this->geometryService->getPointFromCoordinates($chippingLocation->latitude, $chippingLocation->longitude);
 
-        if ($this->chippingLocationIsLastVisitedPoint($chippingLocation, $animal->visitedLocations) && $this->polygonHasPoint($polygon, $geoPointChippingLocation)) {
+        if ($this->chippingLocationIsLastVisitedPoint($chippingLocation, $animal->visitedLocations)
+            && $this->geometryService->polygonHasPoint($polygon, $pointChippingLocation)
+        ) {
             if ($this->dateBetweenTheseDates($animal->chipping_date_time)) {
                 return true;
             }
@@ -178,9 +144,9 @@ class AnalyticService
         if ($animal->visitedLocations->isEmpty()) return false;
 
         $lastVisitedLocation = $animal->visitedLocations->last();
-        $geoPointLastVisitedLocation = new Coordinate($lastVisitedLocation->latitude, $lastVisitedLocation->longitude);
+        $pointLastVisitedLocation = $this->geometryService->getPointFromCoordinates($lastVisitedLocation->latitude, $lastVisitedLocation->longitude);
 
-        if ($this->polygonHasPoint($polygon, $geoPointLastVisitedLocation)) {
+        if ($this->geometryService->polygonHasPoint($polygon, $pointLastVisitedLocation)) {
             if ($this->dateBetweenTheseDates($lastVisitedLocation->pivot->date_time)) {
                 return true;
             }
@@ -198,9 +164,9 @@ class AnalyticService
         if ($animal->visitedLocations->isEmpty()) return false;
 
         $lastVisitedLocation = $animal->visitedLocations->last();
-        $geoPointLastVisitedLocation = new Coordinate($lastVisitedLocation->latitude, $lastVisitedLocation->longitude);
+        $pointLastVisitedLocation = $this->geometryService->getPointFromCoordinates($lastVisitedLocation->latitude, $lastVisitedLocation->longitude);
 
-        if ($this->polygonHasPoint($polygon, $geoPointLastVisitedLocation)) {
+        if ($this->geometryService->polygonHasPoint($polygon, $pointLastVisitedLocation)) {
             if ($this->dateBetweenTheseDates($lastVisitedLocation->pivot->date_time)) {
                 return true;
             }
@@ -217,9 +183,11 @@ class AnalyticService
     private function animalGoneArea(Animal $animal, Polygon $polygon)
     {
         $chippingLocation = $animal->chippingLocation;
-        $geoPointChippingLocation = new Coordinate($chippingLocation->latitude, $chippingLocation->longitude);
+        $pointChippingLocation = $this->geometryService->getPointFromCoordinates($chippingLocation->latitude, $chippingLocation->longitude);
 
-        if (!$this->chippingLocationIsLastVisitedPoint($chippingLocation, $animal->visitedLocations) && $this->polygonHasPoint($polygon, $geoPointChippingLocation)) {
+        if (!$this->chippingLocationIsLastVisitedPoint($chippingLocation, $animal->visitedLocations)
+            && $this->geometryService->polygonHasPoint($polygon, $pointChippingLocation)
+        ) {
             if ($this->dateBetweenTheseDates($animal->chipping_date_time)) {
                 return true;
             }
@@ -230,9 +198,11 @@ class AnalyticService
         $lastVisitedLocation = $animal->visitedLocations->last();
 
         foreach ($animal->visitedLocations as $visitedLocation) {
-            $geoPointLastVisitedLocation = new Coordinate($visitedLocation->latitude, $visitedLocation->longitude);
-            if ($this->polygonHasPoint($polygon, $geoPointLastVisitedLocation) && $visitedLocation->id != $lastVisitedLocation->id) {
+            $pointLastVisitedLocation = $this->geometryService->getPointFromCoordinates($visitedLocation->latitude, $visitedLocation->longitude);
 
+            if ($this->geometryService->polygonHasPoint($polygon, $pointLastVisitedLocation)
+                && $visitedLocation->id != $lastVisitedLocation->id
+            ) {
                 if ($this->dateBetweenTheseDates($visitedLocation->pivot->date_time)) {
                     return true;
                 }

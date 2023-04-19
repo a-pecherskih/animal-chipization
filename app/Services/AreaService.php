@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Packages\Geometry\Geometry;
 use App\Repositories\AreaRepository;
 use App\Validators\AreaValidator;
 
@@ -9,15 +10,15 @@ class AreaService
 {
     private AreaRepository $repository;
     private AreaValidator $validator;
-    private GeometryService $geometryService;
+    private Geometry $geometryService;
 
     /**
      * AreaService constructor.
      * @param \App\Repositories\AreaRepository $repository
      * @param \App\Validators\AreaValidator $validator
-     * @param \App\Services\GeometryService $geometryService
+     * @param \App\Packages\Geometry\Geometry $geometryService
      */
-    public function __construct(AreaRepository $repository, AreaValidator $validator, GeometryService $geometryService)
+    public function __construct(AreaRepository $repository, AreaValidator $validator, Geometry $geometryService)
     {
         $this->repository = $repository;
         $this->validator = $validator;
@@ -31,18 +32,18 @@ class AreaService
 
     public function create(array $data)
     {
-        $points = $this->geometryService->getPoints($data['areaPoints']);
-        $polygon = $this->geometryService->getPolygonFromGeoPoints($points);
+        $points = $this->geometryService->getPointsFromCoordinates($data['areaPoints']);
+        $polygon = $this->geometryService->getPolygonFromPoints($points);
 
         $this->validator->areaDoesntHaveDuplicatePointsOrFail($data['areaPoints']);
         $this->validator->inNotLineOrFail($points);
-        $this->validator->borderNotCrossEachOtherOrFail($polygon->getSegments());
+        $this->validator->borderNotCrossEachOtherOrFail($polygon);
 
         $otherAreas = $this->repository->getOtherAreas();
 
         foreach ($otherAreas as $area) {
-            $pointsOtherArea = $this->geometryService->getPoints($area->points);
-            $polygonOtherArea = $this->geometryService->getPolygonFromGeoPoints($pointsOtherArea);
+            $pointsOtherArea = $this->geometryService->getPointsFromCoordinates($area->points);
+            $polygonOtherArea = $this->geometryService->getPolygonFromPoints($pointsOtherArea);
 
             $this->validator->areaNotInsideOtherAreaOrFail($polygon, $polygonOtherArea);
             $this->validator->areaDoesntHaveSamePointsOrFail($points, $polygonOtherArea);
@@ -57,18 +58,18 @@ class AreaService
 
         $this->validator->areaNotExistSameNameOrFail($area, $data['name']);
 
-        $points = $this->geometryService->getPoints($data['areaPoints']);
-        $polygon = $this->geometryService->getPolygonFromGeoPoints($points);
+        $points = $this->geometryService->getPointsFromCoordinates($data['areaPoints']);
+        $polygon = $this->geometryService->getPolygonFromPoints($points);
 
         $this->validator->areaDoesntHaveDuplicatePointsOrFail($data['areaPoints']);
         $this->validator->inNotLineOrFail($points);
-        $this->validator->borderNotCrossEachOtherOrFail($polygon->getSegments());
+        $this->validator->borderNotCrossEachOtherOrFail($polygon);
 
         $otherAreas = $this->repository->getOtherAreas($area->id);
 
         foreach ($otherAreas as $areaOther) {
-            $pointsOtherArea = $this->geometryService->getPoints($areaOther->points);
-            $polygonOtherArea = $this->geometryService->getPolygonFromGeoPoints($pointsOtherArea);
+            $pointsOtherArea = $this->geometryService->getPointsFromCoordinates($areaOther->points);
+            $polygonOtherArea = $this->geometryService->getPolygonFromPoints($pointsOtherArea);
 
             $this->validator->areaNotInsideOtherAreaOrFail($polygon, $polygonOtherArea);
             $this->validator->areaDoesntHaveSamePointsOrFail($points, $polygonOtherArea);

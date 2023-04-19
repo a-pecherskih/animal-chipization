@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Packages\Geometry\Geo\GeoGeometry;
+use App\Packages\Geometry\Geometry;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,7 +15,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->bind(Geometry::class, function($app) {
+            return new GeoGeometry();
+        });
     }
 
     /**

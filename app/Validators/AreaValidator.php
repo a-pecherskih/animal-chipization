@@ -4,22 +4,21 @@ namespace App\Validators;
 
 use App\Exceptions\BadRequestException;
 use App\Exceptions\ModelFieldExistsException;
+use App\Packages\Geometry\Geometry;
+use App\Packages\Geometry\Polygon;
 use App\Repositories\AreaRepository;
-use App\Services\GeometryService;
-use Location\Intersection\Intersection;
-use Location\Polygon;
 
 class AreaValidator
 {
     private AreaRepository $repository;
-    private GeometryService $geometryService;
+    private Geometry $geometryService;
 
     /**
      * AreaValidator constructor.
      * @param \App\Repositories\AreaRepository $repository
-     * @param \App\Services\GeometryService $geometryService
+     * @param \App\Packages\Geometry\Geometry $geometryService
      */
-    public function __construct(AreaRepository $repository, GeometryService $geometryService)
+    public function __construct(AreaRepository $repository, Geometry $geometryService)
     {
         $this->repository = $repository;
         $this->geometryService = $geometryService;
@@ -51,23 +50,9 @@ class AreaValidator
      * Границы новой зоны пересекаются между собой
      *  (ищем пересечение границ через одну)
      */
-    public function borderNotCrossEachOtherOrFail(array $lines)
+    public function borderNotCrossEachOtherOrFail(Polygon $polygon)
     {
-        $chunks = collect($lines)->chunk(2);
-
-        /** @var array $bordersPart1 */
-        $bordersPart1 = $chunks->map(function ($chunk) {
-            return $chunk->first();
-        })->toArray();
-
-        /** @var array $borders */
-        $bordersPart2 = $chunks->map(function ($chunk) {
-            return (count($chunk) == 1) ? null : $chunk->last();
-        })->filter()->toArray();
-
-        if ($this->geometryService->bordersCrossedEachOther($bordersPart1)
-            || $this->geometryService->bordersCrossedEachOther($bordersPart2)
-        ) {
+        if ($this->geometryService->polygonLinesCrossedEachOther($polygon)) {
             throw new BadRequestException('area borders cross each other');
         }
     }
@@ -77,11 +62,8 @@ class AreaValidator
      */
     public function areaNotInsideOtherAreaOrFail(Polygon $polygonCurrent, Polygon $polygonOther)
     {
-        $intersection = new Intersection();
-
-        if ($intersection->intersects($polygonCurrent, $polygonOther) || $intersection->intersects($polygonOther, $polygonCurrent)) {
-
-            if ($this->geometryService->areasHaveCrossBordersNotCommon($polygonCurrent, $polygonOther)) {
+        if ($this->geometryService->polygonIntersectsOtherPolygon($polygonCurrent, $polygonOther)) {
+            if ($this->geometryService->polygonsHaveCrossBordersNotCommon($polygonCurrent, $polygonOther)) {
                 throw new BadRequestException('area inside other area');
             }
         }
@@ -108,11 +90,8 @@ class AreaValidator
      */
     public function areaDoesntHaveSamePointsOrFail(array $geoPointsCurrent, Polygon $polygonOtherArea)
     {
-        $count = 0;
-
-        foreach ($geoPointsCurrent as $geoPoint) {
-            if ($polygonOtherArea->contains($geoPoint)) $count++;
-        }
+        $points = $this->geometryService->getPointsHasPolygon($geoPointsCurrent, $polygonOtherArea);
+        $count = count($points);
 
         if ($count == count($geoPointsCurrent)) {
             throw new ModelFieldExistsException('has same other area');
